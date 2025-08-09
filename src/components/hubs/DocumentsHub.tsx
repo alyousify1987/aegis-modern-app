@@ -1,11 +1,21 @@
 import { useEffect, useState } from 'react';
-import { Box, Button, Card, CardContent, Typography, List, ListItem, ListItemText } from '@mui/material';
+import { Box, Button, Card, CardContent, Typography, List, ListItem, ListItemText, IconButton } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { getDexieAsync } from '../../services/db/dexie';
 import { extractEntities } from '../../services/ai/nlp';
 
 export function DocumentsHub(){
   const [docs, setDocs] = useState<any[]>([]);
   const [status, setStatus] = useState<string>('');
+  async function remove(id: string){
+    try{
+      const db = await getDexieAsync();
+      setDocs(prev => prev.filter(d => d.id !== id));
+      await db.table('documents').delete(id);
+      setStatus('Deleted 1 document');
+      void refresh();
+    }catch(e:any){ setStatus(e?.message||String(e)); }
+  }
 
   async function refresh(){
     try{
@@ -61,7 +71,11 @@ export function DocumentsHub(){
       <Typography color="text.secondary" mb={2} data-testid="docs-status">{status || `Total: ${docs.length}`}</Typography>
           <List dense data-testid="docs-list">
             {docs.map(d => (
-              <ListItem key={d.id}>
+              <ListItem key={d.id} data-testid={`doc-item-${d.id}`} secondaryAction={
+                <IconButton aria-label="delete document" onClick={() => void remove(d.id)} data-testid={`doc-delete-${d.id}`}>
+                  <DeleteIcon />
+                </IconButton>
+              }>
                 <ListItemText primary={`${d.name} (rev ${d.rev||1})`} secondary={(d.tags||[]).join(', ')} />
               </ListItem>
             ))}

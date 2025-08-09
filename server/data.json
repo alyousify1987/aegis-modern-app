@@ -2046,10 +2046,98 @@
       ],
       "createdAt": "2025-08-09T20:25:42.634Z",
       "updatedAt": "2025-08-09T20:25:42.634Z"
+    },
+    {
+      "id": "audit_1754771821725",
+      "title": "AI-Generated ISO 22000 Audit - 8/9/2025",
+      "description": "Comprehensive AI-generated audit covering all critical control points and compliance requirements",
+      "type": "internal",
+      "standard": "ISO_22000",
+      "status": "planned",
+      "scope": "Production department, Critical control points, Documentation review",
+      "startDate": "2025-08-09",
+      "endDate": "2025-08-16",
+      "leadAuditor": "AI Assistant",
+      "auditors": [
+        "AI Assistant",
+        "Quality Manager"
+      ],
+      "auditees": [
+        "Production Manager",
+        "Staff Representatives"
+      ],
+      "createdAt": "2025-08-09T20:37:01.756Z",
+      "updatedAt": "2025-08-09T20:37:01.756Z"
+    },
+    {
+      "id": "audit_1754771864681",
+      "title": "AI-Generated ISO 22000 Audit - 8/9/2025",
+      "description": "Comprehensive AI-generated audit covering all critical control points and compliance requirements",
+      "type": "internal",
+      "standard": "ISO_22000",
+      "status": "planned",
+      "scope": "Production department, Critical control points, Documentation review",
+      "startDate": "2025-08-09",
+      "endDate": "2025-08-16",
+      "leadAuditor": "AI Assistant",
+      "auditors": [
+        "AI Assistant",
+        "Quality Manager"
+      ],
+      "auditees": [
+        "Production Manager",
+        "Staff Representatives"
+      ],
+      "createdAt": "2025-08-09T20:37:44.707Z",
+      "updatedAt": "2025-08-09T20:37:44.707Z"
+    },
+    {
+      "id": "audit_1754771909433",
+      "title": "AI-Generated ISO 22000 Audit - 8/9/2025",
+      "description": "Comprehensive AI-generated audit covering all critical control points and compliance requirements",
+      "type": "internal",
+      "standard": "ISO_22000",
+      "status": "planned",
+      "scope": "Production department, Critical control points, Documentation review",
+      "startDate": "2025-08-09",
+      "endDate": "2025-08-16",
+      "leadAuditor": "AI Assistant",
+      "auditors": [
+        "AI Assistant",
+        "Quality Manager"
+      ],
+      "auditees": [
+        "Production Manager",
+        "Staff Representatives"
+      ],
+      "createdAt": "2025-08-09T20:38:29.434Z",
+      "updatedAt": "2025-08-09T20:38:29.434Z"
+    },
+    {
+      "id": "audit_1754771917824",
+      "title": "AI-Generated ISO 22000 Audit - 8/9/2025",
+      "description": "Comprehensive AI-generated audit covering all critical control points and compliance requirements",
+      "type": "internal",
+      "standard": "ISO_22000",
+      "status": "planned",
+      "scope": "Production department, Critical control points, Documentation review",
+      "startDate": "2025-08-09",
+      "endDate": "2025-08-16",
+      "leadAuditor": "AI Assistant",
+      "auditors": [
+        "AI Assistant",
+        "Quality Manager"
+      ],
+      "auditees": [
+        "Production Manager",
+        "Staff Representatives"
+      ],
+      "createdAt": "2025-08-09T20:38:37.824Z",
+      "updatedAt": "2025-08-09T20:38:37.824Z"
     }
   ],
   "analytics": {
-    "totalAudits": 93,
+    "totalAudits": 97,
     "completedAudits": 12,
     "pendingActions": 5,
     "criticalFindings": 3,
@@ -2644,6 +2732,23 @@
       "createdBy": "system",
       "createdAt": "2025-08-09T20:25:45.912Z",
       "updatedAt": "2025-08-09T20:25:45.912Z"
+    },
+    {
+      "id": "risk_1754771871671",
+      "title": "E2E Test Risk",
+      "description": "Created by Playwright",
+      "category": "",
+      "likelihood": 1,
+      "impact": 1,
+      "riskScore": 1,
+      "status": "identified",
+      "owner": "",
+      "controls": [],
+      "linkedAudits": [],
+      "linkedActions": [],
+      "createdBy": "system",
+      "createdAt": "2025-08-09T20:37:51.671Z",
+      "updatedAt": "2025-08-09T20:37:51.671Z"
     }
   ],
   "actions": [
@@ -2970,6 +3075,42 @@
       "linkedAudits": [],
       "createdAt": "2025-08-09T20:32:24.635Z",
       "updatedAt": "2025-08-09T20:32:24.635Z"
+    },
+    {
+      "id": "action_1754771886728",
+      "title": "Offline Action",
+      "description": "",
+      "type": "",
+      "priority": "",
+      "status": "open",
+      "assignedTo": "",
+      "createdBy": "system",
+      "dueDate": "2025-08-09T20:38:06.728Z",
+      "progress": 0,
+      "comments": [],
+      "linkedFindings": [],
+      "linkedRisks": [],
+      "linkedAudits": [],
+      "createdAt": "2025-08-09T20:38:06.728Z",
+      "updatedAt": "2025-08-09T20:38:06.728Z"
+    },
+    {
+      "id": "action_1754772267229",
+      "title": "Offline Action",
+      "description": "",
+      "type": "",
+      "priority": "",
+      "status": "open",
+      "assignedTo": "",
+      "createdBy": "system",
+      "dueDate": "2025-08-09T20:44:27.229Z",
+      "progress": 0,
+      "comments": [],
+      "linkedFindings": [],
+      "linkedRisks": [],
+      "linkedAudits": [],
+      "createdAt": "2025-08-09T20:44:27.229Z",
+      "updatedAt": "2025-08-09T20:44:27.229Z"
     }
   ],
   "ncrs": [
@@ -3116,6 +3257,30 @@
       "status": "open",
       "createdAt": "2025-08-09T20:32:38.939Z",
       "updatedAt": "2025-08-09T20:32:38.939Z"
+    },
+    {
+      "id": "ncr_1754771843632",
+      "title": "Mock NCR",
+      "severity": "minor",
+      "status": "open",
+      "createdAt": "2025-08-09T20:37:23.632Z",
+      "updatedAt": "2025-08-09T20:37:23.632Z"
+    },
+    {
+      "id": "ncr_1754771902862",
+      "title": "Mock NCR",
+      "severity": "major",
+      "status": "open",
+      "createdAt": "2025-08-09T20:38:22.862Z",
+      "updatedAt": "2025-08-09T20:38:22.862Z"
+    },
+    {
+      "id": "ncr_1754772294585",
+      "title": "Mock NCR",
+      "severity": "major",
+      "status": "open",
+      "createdAt": "2025-08-09T20:44:54.585Z",
+      "updatedAt": "2025-08-09T20:44:54.585Z"
     }
   ],
   "knowledge": []

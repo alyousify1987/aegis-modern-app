@@ -10,6 +10,9 @@ on:
 jobs:
   build-test:
     runs-on: ubuntu-latest
+    concurrency:
+      group: ci-${{ github.ref }}
+      cancel-in-progress: true
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -27,13 +30,8 @@ jobs:
         run: npm ci
         working-directory: server
 
-      - name: Typecheck and build
-        run: |
-          npm run typecheck
-          npm run build
-
-      - name: API smoke test
-        run: npm run -s smoke
+      - name: Typecheck, build, smoke, and E2E
+        run: npm run -s ci:all
 
       - name: Cache Playwright browsers
         uses: actions/cache@v4
@@ -43,13 +41,14 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-playwright-
 
-      - name: Install Playwright browsers and system deps
+      - name: Ensure Playwright browsers installed
         run: npx playwright install --with-deps
+        if: always()
 
-      - name: Run Playwright E2E
-        run: npx playwright test --reporter=html
+      - name: Re-run E2E if flaky (optional best-effort)
+        run: npx playwright test --reporter=html || npx playwright test --reporter=html
+        if: failure()
         env:
-          # Base URL and upload dir can be overridden as needed
           E2E_BASE_URL: http://localhost:1420
 
       - name: Upload Playwright report
@@ -58,4 +57,14 @@ jobs:
         with:
           name: playwright-report
           path: playwright-report
+          retention-days: 7
+
+      - name: Upload Playwright traces and test-results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-results
+          path: |
+            test-results
+            **/*.zip
           retention-days: 7

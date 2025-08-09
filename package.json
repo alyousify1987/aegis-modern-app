@@ -17,7 +17,9 @@
     "smoke": "node ./scripts/smoke.mjs",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "test:e2e:headed": "playwright test --headed"
+  "test:e2e:headed": "playwright test --headed",
+  "ci:e2e": "npx playwright install --with-deps && npx playwright test --reporter=html",
+  "ci:all": "npm run -s typecheck && npm run -s build && npm run -s smoke && npm run -s ci:e2e"
   },
   "dependencies": {
     "@duckdb/duckdb-wasm": "^1.29.0",

@@ -4,8 +4,10 @@ import { evaluateRules, demoRules } from '../../services/ai/rules';
 import { apiJson } from '../../utils/api';
 import { isOnline, onOnlineChange } from '../../services/net/health';
 import { enqueue as enqueueSync, processQueue } from '../../services/net/syncQueue';
+import { useSyncCompleteToast } from '../../services/net/syncNotify';
 
 export function NcrHub(){
+  useSyncCompleteToast('NCRs synced');
   const [ncrs, setNcrs] = useState<any[]>([]);
   const [status, setStatus] = useState<string>('');
 

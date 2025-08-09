@@ -48,6 +48,7 @@ import type { Action, ActionType, Priority, ActionStatus } from '../../types';
 import { apiFetch, apiJson } from '../../utils/api';
 import { isOnline, onOnlineChange } from '../../services/net/health';
 import { enqueue as enqueueSync, processQueue } from '../../services/net/syncQueue';
+import { useSyncCompleteToast } from '../../services/net/syncNotify';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -78,6 +79,7 @@ const hydrateAction = (a: any): Action => ({
 });
 
 export function ActionHub() {
+  useSyncCompleteToast('Actions synced');
   const [tabValue, setTabValue] = useState(0);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);

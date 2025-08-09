@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect as useEffectReact, useState } from 'react';
 import {
   AppBar,
   Box,
@@ -47,6 +47,7 @@ import type { CurrentView } from '../types';
 import { t, getLocale, setLocale, type Locale } from '../services/i18n';
 import { useToast } from './ToastProvider';
 import { PassphraseDialog } from './PassphraseDialog';
+import { isProcessingQueue, onQueueChange } from '../services/net/syncQueue';
 
 const drawerWidth = 240;
 
@@ -98,6 +99,7 @@ export function Layout({ children, currentView, setCurrentView, onLogout }: Layo
   const [lang, setLang] = useState<Locale>(getLocale());
   const [backendUp, setBackendUp] = useState<boolean | null>(null);
   const [passDlg, setPassDlg] = useState(false);
+  const [syncing, setSyncing] = useState<boolean>(false);
   useEffect(() => {
     let alive = true;
     const check = async () => {
@@ -107,6 +109,13 @@ export function Layout({ children, currentView, setCurrentView, onLogout }: Layo
     void check();
     const id = setInterval(check, 8000);
     return () => { alive = false; clearInterval(id); };
+  }, []);
+
+  // Observe queue processing to render a subtle syncing indicator
+  useEffectReact(() => {
+    setSyncing(isProcessingQueue());
+    const unsub = onQueueChange(() => setSyncing(isProcessingQueue()));
+    return () => { unsub && unsub(); };
   }, []);
 
   const handleDrawerToggle = () => {
@@ -198,6 +207,12 @@ export function Layout({ children, currentView, setCurrentView, onLogout }: Layo
             <CircleIcon sx={{ fontSize: 10, color: backendUp === null ? 'warning.main' : backendUp ? 'success.main' : 'error.main', mr: 1 }} />
             <Typography variant="body2" color="text.secondary">API</Typography>
           </Box>
+          {syncing && (
+            <Box sx={{ display: 'flex', alignItems: 'center', mr: 2 }}>
+              <CircleIcon sx={{ fontSize: 10, color: 'info.main', mr: 1, animation: 'pulse 1s ease-in-out infinite' }} />
+              <Typography variant="body2" color="text.secondary">Syncing…</Typography>
+            </Box>
+          )}
           <IconButton
             size="large"
             edge="end"

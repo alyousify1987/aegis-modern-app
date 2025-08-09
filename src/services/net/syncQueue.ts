@@ -16,6 +16,12 @@ const db = getDb();
 let inited = false;
 let processing = false;
 let currentPromise: Promise<void> | null = null;
+const queueSubs = new Set<() => void>();
+
+function notifyQueue() { queueSubs.forEach(cb => { try { cb(); } catch {} }); }
+
+export function onQueueChange(cb: () => void) { queueSubs.add(cb); return () => queueSubs.delete(cb); }
+export function isProcessingQueue() { return processing; }
 
 async function ensure(){ if(!inited){ await ensureDb(); inited = true; } }
 
@@ -47,6 +53,7 @@ export async function processQueue(): Promise<void> {
     return currentPromise ?? Promise.resolve();
   }
   processing = true;
+  notifyQueue();
   currentPromise = (async () => {
     try{
       if(!isOnline()) return;
@@ -73,6 +80,7 @@ export async function processQueue(): Promise<void> {
     } finally {
       processing = false;
       currentPromise = null;
+      notifyQueue();
     }
   })();
   return currentPromise;

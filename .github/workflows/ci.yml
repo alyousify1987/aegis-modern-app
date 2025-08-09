@@ -10,6 +10,10 @@ on:
 jobs:
   build-test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      actions: read
     concurrency:
       group: ci-${{ github.ref }}
       cancel-in-progress: true
@@ -90,6 +94,22 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: playwright-report
+
+      - name: Open GitHub Issue on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const sha = process.env.GITHUB_SHA;
+            const runId = process.env.GITHUB_RUN_ID;
+            const repo = process.env.GITHUB_REPOSITORY;
+            const [owner, repoName] = repo.split('/');
+            const runUrl = `https://github.com/${repo}/actions/runs/${runId}`;
+            const pagesUrl = `https://${owner}.github.io/${repoName}/`;
+            const title = `CI failed on ${sha.substring(0,7)}: ${process.env.GITHUB_REF_NAME}`;
+            const body = `Automated issue opened due to CI failure.\n\n- Run: ${runUrl}\n- Pages report (if available): ${pagesUrl}\n- Branch: ${process.env.GITHUB_REF_NAME}\n- Commit: ${sha}\n\nArtifacts (report, traces) are attached to the run. Please check failing step logs and the published report.`;
+            await github.rest.issues.create({ owner, repo: repoName, title, body, labels: ['ci','failure'] });
 
   deploy-pages:
     needs: build-test

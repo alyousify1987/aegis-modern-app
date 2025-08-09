@@ -1,0 +1,14 @@
+{
+  "typescript.preferences.includePackageJsonAutoImports": "on",
+  "typescript.suggest.autoImports": true,
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "typescript.workspaceSymbols.scope": "allOpenProjects",
+  "files.exclude": {
+    "**/*.backup": true,
+    "src/**/*.backup": true
+  },
+  "search.exclude": {
+    "**/*.backup": true
+  }
+}

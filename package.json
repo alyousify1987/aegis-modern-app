@@ -1,0 +1,50 @@
+{
+  "name": "aegis-app",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:web": "vite",
+    "dev:server": "node ./server/simple-server.js",
+    "dev:all": "concurrently -k -n SERVER,WEB -c green,cyan \"npm:dev:server\" \"npm:dev:web\"",
+    "dev:tauri": "concurrently -k -n SERVER,APP -c green,magenta \"npm:dev:server\" \"tauri dev\"",
+    "build:desktop": "tauri build",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "tauri": "tauri",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "smoke": "node ./scripts/smoke.mjs",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed"
+  },
+  "dependencies": {
+    "@duckdb/duckdb-wasm": "^1.29.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^5.18.0",
+    "@mui/material": "^5.18.0",
+    "@mui/system": "^7.3.1",
+    "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-opener": "^2",
+  "dexie": "^4.0.8",
+  "json-rules-engine": "^7.3.1",
+  "onnxruntime-web": "^1.18.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+  "tesseract.js": "^5.1.0",
+    "stylis-plugin-rtl": "^2.1.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.54.2",
+    "@tauri-apps/cli": "^2",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^4.6.0",
+    "concurrently": "^8.2.2",
+    "typescript": "~5.8.3",
+    "vite": "^7.0.4",
+    "vite-plugin-pwa": "^1.0.2"
+  }
+}

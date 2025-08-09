@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aegis Audit API Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .endpoint { background: #f5f5f5; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .result { background: #e8f5e8; padding: 10px; margin: 10px 0; border-radius: 5px; }
+        button { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 5px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🛡️ Aegis Audit API Test</h1>
+    
+    <div class="endpoint">
+        <h3>1. Health Check</h3>
+        <button onclick="testHealth()">Test /health</button>
+        <div id="health-result" class="result" style="display:none;"></div>
+    </div>
+
+    <div class="endpoint">
+        <h3>2. Login Test</h3>
+        <button onclick="testLogin()">Test Login (admin@aegisaudit.com / admin123)</button>
+        <div id="login-result" class="result" style="display:none;"></div>
+    </div>
+
+    <div class="endpoint">
+        <h3>3. Get Audits</h3>
+        <button onclick="testAudits()">Test /api/audits</button>
+        <div id="audits-result" class="result" style="display:none;"></div>
+    </div>
+
+    <div class="endpoint">
+        <h3>4. Analytics Dashboard</h3>
+        <button onclick="testAnalytics()">Test /api/analytics/dashboard</button>
+        <div id="analytics-result" class="result" style="display:none;"></div>
+    </div>
+
+    <div class="endpoint">
+        <h3>5. Notifications</h3>
+        <button onclick="testNotifications()">Test /api/notifications</button>
+        <div id="notifications-result" class="result" style="display:none;"></div>
+    </div>
+
+    <script>
+        async function testHealth() {
+            try {
+                const response = await fetch('http://localhost:3001/health');
+                const data = await response.json();
+                document.getElementById('health-result').style.display = 'block';
+                document.getElementById('health-result').innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+            } catch (error) {
+                document.getElementById('health-result').style.display = 'block';
+                document.getElementById('health-result').innerHTML = '<pre>Error: ' + error.message + '</pre>';
+            }
+        }
+
+        async function testLogin() {
+            try {
+                const response = await fetch('http://localhost:3001/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: 'admin@aegisaudit.com', password: 'admin123' })
+                });
+                const data = await response.json();
+                document.getElementById('login-result').style.display = 'block';
+                document.getElementById('login-result').innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+            } catch (error) {
+                document.getElementById('login-result').style.display = 'block';
+                document.getElementById('login-result').innerHTML = '<pre>Error: ' + error.message + '</pre>';
+            }
+        }
+
+        async function testAudits() {
+            try {
+                const response = await fetch('http://localhost:3001/api/audits');
+                const data = await response.json();
+                document.getElementById('audits-result').style.display = 'block';
+                document.getElementById('audits-result').innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+            } catch (error) {
+                document.getElementById('audits-result').style.display = 'block';
+                document.getElementById('audits-result').innerHTML = '<pre>Error: ' + error.message + '</pre>';
+            }
+        }
+
+        async function testAnalytics() {
+            try {
+                const response = await fetch('http://localhost:3001/api/analytics/dashboard');
+                const data = await response.json();
+                document.getElementById('analytics-result').style.display = 'block';
+                document.getElementById('analytics-result').innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+            } catch (error) {
+                document.getElementById('analytics-result').style.display = 'block';
+                document.getElementById('analytics-result').innerHTML = '<pre>Error: ' + error.message + '</pre>';
+            }
+        }
+
+        async function testNotifications() {
+            try {
+                const response = await fetch('http://localhost:3001/api/notifications');
+                const data = await response.json();
+                document.getElementById('notifications-result').style.display = 'block';
+                document.getElementById('notifications-result').innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+            } catch (error) {
+                document.getElementById('notifications-result').style.display = 'block';
+                document.getElementById('notifications-result').innerHTML = '<pre>Error: ' + error.message + '</pre>';
+            }
+        }
+    </script>
+</body>
+</html>

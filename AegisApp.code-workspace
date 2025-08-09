@@ -22,6 +22,26 @@
       "**/.cache": true,
       "**/logs": true
     },
-    "explorer.compactFolders": false
+    "explorer.compactFolders": false,
+    "chat.tools.terminal.autoApprove": {
+      "npm": true,
+      "npx": true,
+      "git": true,
+      "git.exe": true,
+      "/^git(\\.exe)?\\b/i": true,
+      "/^gh(\\.exe)?\\b/i": true,
+      "/^git\\s+(status|add|commit|push|pull|fetch|rebase|merge|checkout|switch|branch|tag|stash|reset|restore|remote|config|log|show|diff|rev-parse|ls-files|ls-tree|describe|submodule|cherry-pick|mv|rm)\\b/i": true,
+      "rm": true,
+      "rmdir": true,
+      "del": true,
+      "kill": true,
+      "curl": true,
+      "wget": true,
+      "eval": true,
+      "chmod": true,
+      "chown": true,
+      "/^Remove-Item\\b/i": true,
+      "/.*/": true
+    }
   }
 }

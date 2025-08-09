@@ -62,9 +62,10 @@ interface MetricCardProps {
   change: number;
   icon: React.ReactNode;
   color: string;
+  testId?: string;
 }
 
-function MetricCard({ title, value, change, icon, color }: MetricCardProps) {
+function MetricCard({ title, value, change, icon, color, testId }: MetricCardProps) {
   const isPositive = change > 0;
   const changeColor = isPositive ? '#4caf50' : '#f44336';
   
@@ -87,7 +88,7 @@ function MetricCard({ title, value, change, icon, color }: MetricCardProps) {
             {title}
           </Typography>
         </Box>
-        <Typography variant="h3" component="div" fontWeight="bold" mb={1}>
+  <Typography variant="h3" component="div" fontWeight="bold" mb={1} data-testid={testId}>
           {value}
         </Typography>
         <Box display="flex" alignItems="center">
@@ -257,6 +258,7 @@ export function AnalyticsHub() {
             change={0}
             icon={<ReportIcon />}
             color="#1976d2"
+            testId="metric-completed-value"
           />
         </Grid>
         <Grid sx={{ xs: 12, sm: 6, md: 3 }}>
@@ -266,6 +268,7 @@ export function AnalyticsHub() {
             change={0}
             icon={<AnalyticsIcon />}
             color="#2e7d32"
+            testId="metric-compliance-value"
           />
         </Grid>
         <Grid sx={{ xs: 12, sm: 6, md: 3 }}>
@@ -275,15 +278,17 @@ export function AnalyticsHub() {
             change={0}
             icon={<TrendingUpIcon />}
             color="#ed6c02"
+            testId="metric-findings-value"
           />
         </Grid>
         <Grid sx={{ xs: 12, sm: 6, md: 3 }}>
           <MetricCard
-            title="Avg Audit Time"
-            value={'—'}
+            title="Total Audits"
+            value={summary?.totalAudits ?? 0}
             change={0}
             icon={<DashboardIcon />}
             color="#9c27b0"
+            testId="metric-total-value"
           />
         </Grid>
       </Grid>

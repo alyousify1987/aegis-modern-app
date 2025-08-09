@@ -3,6 +3,7 @@ import { encryptJson, decryptJson, type EncryptedPayload } from '../security/cry
 import { logError } from '../obs/logger';
 
 let passphrase: string | null = null;
+let passphraseProvider: (() => Promise<string | null> | string | null) | null = null;
 
 export function setPassphrase(p: string, opts?: { rememberForSession?: boolean }){
   passphrase = p;
@@ -11,6 +12,10 @@ export function setPassphrase(p: string, opts?: { rememberForSession?: boolean }
       sessionStorage.setItem('aegis_passphrase', p);
     }
   } catch {}
+}
+// Allow callers (e.g., native wrapper) to provide a custom resolver (OS keychain, biometric, etc.)
+export function setPassphraseProvider(fn: (() => Promise<string | null> | string | null) | null) {
+  passphraseProvider = fn;
 }
 export function getPassphrase(): string {
   if (passphrase) return passphrase;
@@ -28,6 +33,23 @@ export function getPassphrase(): string {
   const token = typeof window !== 'undefined' ? localStorage.getItem('aegis_token') : null;
   passphrase = token || 'aegis_dev_fallback_key';
   return passphrase;
+}
+
+export async function getPassphraseAsync(): Promise<string> {
+  if (passphrase) return passphrase;
+  // Try provider first
+  try {
+    if (passphraseProvider) {
+      const val = await Promise.resolve(passphraseProvider());
+      if (val) {
+        passphrase = val;
+        return passphrase;
+      }
+    }
+  } catch (e) {
+    // Non-fatal: fall back to sync path
+  }
+  return getPassphrase();
 }
 
 const db = getDb();
@@ -58,4 +80,10 @@ export function clearPassphrase(){
   // Always clear in-memory key on demand (e.g., logout)
   passphrase = null;
   try { if (typeof window !== 'undefined') sessionStorage.removeItem('aegis_passphrase'); } catch {}
+}
+
+// Optional helper to remove an encrypted record entirely
+export async function removeEncrypted(store: string, id: IDBValidKey): Promise<void> {
+  await ensure();
+  await db.delete(store, id);
 }

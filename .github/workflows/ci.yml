@@ -17,6 +17,9 @@ jobs:
     concurrency:
       group: ci-${{ github.ref }}
       cancel-in-progress: true
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -111,6 +114,50 @@ jobs:
             const body = `Automated issue opened due to CI failure.\n\n- Run: ${runUrl}\n- Pages report (if available): ${pagesUrl}\n- Branch: ${process.env.GITHUB_REF_NAME}\n- Commit: ${sha}\n\nArtifacts (report, traces) are attached to the run. Please check failing step logs and the published report.`;
             await github.rest.issues.create({ owner, repo: repoName, title, body, labels: ['ci','failure'] });
 
+      - name: Notify Slack (failure)
+        if: failure() && env.SLACK_WEBHOOK_URL != ''
+        run: |
+          STATUS="FAILED"
+          PAYLOAD=$(jq -nc --arg text "CI $STATUS: $GITHUB_REPOSITORY@$GITHUB_REF_NAME (run $GITHUB_RUN_ID). Report: https://${GITHUB_REPOSITORY%%/*}.github.io/${GITHUB_REPOSITORY##*/}/" '{text: $text}')
+          curl -X POST -H 'Content-type: application/json' --data "$PAYLOAD" "$SLACK_WEBHOOK_URL"
+
+      - name: Notify Slack (success)
+        if: success() && env.SLACK_WEBHOOK_URL != ''
+        run: |
+          STATUS="PASSED"
+          PAYLOAD=$(jq -nc --arg text "CI $STATUS: $GITHUB_REPOSITORY@$GITHUB_REF_NAME (run $GITHUB_RUN_ID). Report: https://${GITHUB_REPOSITORY%%/*}.github.io/${GITHUB_REPOSITORY##*/}/" '{text: $text}')
+          curl -X POST -H 'Content-type: application/json' --data "$PAYLOAD" "$SLACK_WEBHOOK_URL"
+
+      - name: Notify Teams (failure)
+        if: failure() && env.TEAMS_WEBHOOK_URL != ''
+        run: |
+          cat > payload.json <<'JSON'
+          {
+            "@type": "MessageCard",
+            "@context": "http://schema.org/extensions",
+            "summary": "CI Failed",
+            "themeColor": "EA4300",
+            "title": "CI Failed",
+            "text": "CI failed for ${GITHUB_REPOSITORY} on ${GITHUB_REF_NAME}. Report: https://${GITHUB_REPOSITORY%%/*}.github.io/${GITHUB_REPOSITORY##*/}/"
+          }
+          JSON
+          curl -H 'Content-Type: application/json' -d @payload.json "$TEAMS_WEBHOOK_URL"
+
+      - name: Notify Teams (success)
+        if: success() && env.TEAMS_WEBHOOK_URL != ''
+        run: |
+          cat > payload.json <<'JSON'
+          {
+            "@type": "MessageCard",
+            "@context": "http://schema.org/extensions",
+            "summary": "CI Passed",
+            "themeColor": "2EB886",
+            "title": "CI Passed",
+            "text": "CI passed for ${GITHUB_REPOSITORY} on ${GITHUB_REF_NAME}. Report: https://${GITHUB_REPOSITORY%%/*}.github.io/${GITHUB_REPOSITORY##*/}/"
+          }
+          JSON
+          curl -H 'Content-Type: application/json' -d @payload.json "$TEAMS_WEBHOOK_URL"
+
   deploy-pages:
     needs: build-test
     runs-on: ubuntu-latest
@@ -124,6 +171,19 @@ jobs:
       group: pages
       cancel-in-progress: true
     steps:
+      - name: Close prior CI failure issues on success
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const repo = process.env.GITHUB_REPOSITORY;
+            const [owner, repoName] = repo.split('/');
+            const issues = await github.paginate(github.rest.issues.listForRepo, { owner, repo: repoName, labels: 'ci,failure', state: 'open' });
+            for (const issue of issues) {
+              await github.rest.issues.createComment({ owner, repo: repoName, issue_number: issue.number, body: 'CI is green again. Closing this failure issue automatically.' });
+              await github.rest.issues.update({ owner, repo: repoName, issue_number: issue.number, state: 'closed' });
+            }
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

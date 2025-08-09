@@ -3281,6 +3281,46 @@
       "status": "open",
       "createdAt": "2025-08-09T20:44:54.585Z",
       "updatedAt": "2025-08-09T20:44:54.585Z"
+    },
+    {
+      "id": "ncr_1754772417422",
+      "title": "Mock NCR",
+      "severity": "major",
+      "status": "open",
+      "createdAt": "2025-08-09T20:46:57.422Z",
+      "updatedAt": "2025-08-09T20:46:57.422Z"
+    },
+    {
+      "id": "ncr_1754772564262",
+      "title": "Mock NCR",
+      "severity": "major",
+      "status": "open",
+      "createdAt": "2025-08-09T20:49:24.262Z",
+      "updatedAt": "2025-08-09T20:49:24.262Z"
+    },
+    {
+      "id": "ncr_1754772683158",
+      "title": "Mock NCR",
+      "severity": "major",
+      "status": "open",
+      "createdAt": "2025-08-09T20:51:23.158Z",
+      "updatedAt": "2025-08-09T20:51:23.158Z"
+    },
+    {
+      "id": "ncr_1754772787018",
+      "title": "Mock NCR",
+      "severity": "minor",
+      "status": "open",
+      "createdAt": "2025-08-09T20:53:07.018Z",
+      "updatedAt": "2025-08-09T20:53:07.018Z"
+    },
+    {
+      "id": "ncr_1754772968318",
+      "title": "Mock NCR",
+      "severity": "minor",
+      "status": "open",
+      "createdAt": "2025-08-09T20:56:08.318Z",
+      "updatedAt": "2025-08-09T20:56:08.318Z"
     }
   ],
   "knowledge": []

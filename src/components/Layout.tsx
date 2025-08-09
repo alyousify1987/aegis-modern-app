@@ -47,7 +47,7 @@ import type { CurrentView } from '../types';
 import { t, getLocale, setLocale, type Locale } from '../services/i18n';
 import { useToast } from './ToastProvider';
 import { PassphraseDialog } from './PassphraseDialog';
-import { isProcessingQueue, onQueueChange } from '../services/net/syncQueue';
+import { isProcessingQueue, onQueueChange, listTasks } from '../services/net/syncQueue';
 
 const drawerWidth = 240;
 
@@ -100,6 +100,7 @@ export function Layout({ children, currentView, setCurrentView, onLogout }: Layo
   const [backendUp, setBackendUp] = useState<boolean | null>(null);
   const [passDlg, setPassDlg] = useState(false);
   const [syncing, setSyncing] = useState<boolean>(false);
+  const [pendingCount, setPendingCount] = useState<number>(0);
   useEffect(() => {
     let alive = true;
     const check = async () => {
@@ -114,7 +115,11 @@ export function Layout({ children, currentView, setCurrentView, onLogout }: Layo
   // Observe queue processing to render a subtle syncing indicator
   useEffectReact(() => {
     setSyncing(isProcessingQueue());
-    const unsub = onQueueChange(() => setSyncing(isProcessingQueue()));
+    void listTasks().then(ts => setPendingCount(ts.length)).catch(() => {});
+    const unsub = onQueueChange(() => {
+      setSyncing(isProcessingQueue());
+      void listTasks().then(ts => setPendingCount(ts.length)).catch(() => {});
+    });
     return () => { unsub && unsub(); };
   }, []);
 
@@ -210,7 +215,7 @@ export function Layout({ children, currentView, setCurrentView, onLogout }: Layo
           {syncing && (
             <Box sx={{ display: 'flex', alignItems: 'center', mr: 2 }}>
               <CircleIcon sx={{ fontSize: 10, color: 'info.main', mr: 1, animation: 'pulse 1s ease-in-out infinite' }} />
-              <Typography variant="body2" color="text.secondary">Syncing…</Typography>
+              <Typography variant="body2" color="text.secondary">Syncing…{pendingCount > 0 ? ` (${pendingCount})` : ''}</Typography>
             </Box>
           )}
           <IconButton

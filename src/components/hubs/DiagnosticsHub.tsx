@@ -3,7 +3,7 @@ import { Box, Button, Card, CardContent, Grid, List, ListItem, ListItemText, Typ
 import { OfflineBanner } from '../../components/OfflineBanner';
 import { isOnline, pingApi } from '../../services/net/health';
 import { getLogs } from '../../services/obs/logger';
-import { listTasks, processQueue, clearAll, deleteTask, retryTask } from '../../services/net/syncQueue';
+import { listTasks, processQueue, clearAll, deleteTask, retryTask, isProcessingQueue, onQueueChange } from '../../services/net/syncQueue';
 import { initDuckDB, query as duckQuery } from '../../services/duckdb/db';
 import { extractEntities } from '../../services/ai/nlp';
 import { evaluateRules, demoRules } from '../../services/ai/rules';
@@ -15,6 +15,7 @@ export function DiagnosticsHub(){
   const [logs, setLogs] = useState<any[]>([]);
   const [tasks, setTasks] = useState<any[]>([]);
   const [duckdbStatus, setDuckdbStatus] = useState<'idle'|'ok'|'error'|'running'>('idle');
+  const [processing, setProcessing] = useState<boolean>(isProcessingQueue());
   const [duckdbMsg, setDuckdbMsg] = useState<string>('');
   const [aiMsg, setAiMsg] = useState<string>('');
   const [aiStatus, setAiStatus] = useState<'idle'|'ok'|'error'|'running'>('idle');
@@ -28,7 +29,11 @@ export function DiagnosticsHub(){
     setTasks(await listTasks());
   }
 
-  useEffect(() => { void refresh(); }, []);
+  useEffect(() => {
+    void refresh();
+    const unsub = onQueueChange(() => setProcessing(isProcessingQueue()));
+    return () => { unsub && unsub(); };
+  }, []);
 
   async function testDuckDB(){
     try{
@@ -81,9 +86,9 @@ export function DiagnosticsHub(){
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
         <Typography variant="h4">Diagnostics</Typography>
         <Box display="flex" gap={1}>
-          <Button variant="outlined" onClick={() => void refresh()}>Refresh</Button>
-          <Button variant="contained" onClick={() => void processQueue()}>Process Queue</Button>
-          <Button variant="outlined" color="error" onClick={() => { void clearAll(); void refresh(); }}>Clear Queue</Button>
+          <Button variant="outlined" onClick={() => void refresh()} disabled={processing}>Refresh</Button>
+          <Button variant="contained" onClick={async () => { await processQueue(); await refresh(); }} disabled={processing}>Process Queue</Button>
+          <Button variant="outlined" color="error" onClick={async () => { await clearAll(); await refresh(); }} disabled={processing}>Clear Queue</Button>
         </Box>
       </Box>
       <Grid container spacing={3}>
@@ -96,7 +101,7 @@ export function DiagnosticsHub(){
         </Grid>
         <Grid item xs={12} md={4}>
           <Card><CardContent>
-            <Typography variant="h6" gutterBottom>Sync Queue</Typography>
+            <Typography variant="h6" gutterBottom>Sync Queue {processing ? '— processing…' : ''} {tasks.length ? `— ${tasks.length} pending` : ''}</Typography>
             <List dense>
               {tasks.map(t => (
                 <ListItem key={t.id} secondaryAction={

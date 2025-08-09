@@ -13,7 +13,16 @@ async function ensureDexie(): Promise<void> {
   }
   if (!DexieLib) throw new Error('Dexie is not available');
   const db = new DexieLib('aegis_app');
+  // Define historical schema (v1) for upgrades from older DBs that lacked 'documents'
   db.version(1).stores({
+    audits: 'id, createdAt',
+    ncrs: 'id, auditId, severity, status, updatedAt',
+    capas: 'id, ncrId, status, dueAt',
+    logs: 'id, ts, level, source',
+    sync: 'id, createdAt, path, method',
+  });
+  // Current schema (v2): adds 'documents' store
+  db.version(2).stores({
     audits: 'id, createdAt',
     documents: 'id, type, owner, rev, updatedAt',
     ncrs: 'id, auditId, severity, status, updatedAt',

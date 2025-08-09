@@ -15,6 +15,8 @@ test.describe('Documents, NCR, RTL, Diagnostics', () => {
     await expect(page.getByRole('heading', { name: 'Document Control' })).toBeVisible();
     const before = await page.getByTestId('docs-list').getByRole('listitem').count();
     await page.getByRole('button', { name: 'Ingest Mock' }).click();
+    // Wait for status to confirm completion, then verify the list grows
+    await expect(page.getByTestId('docs-status')).toContainText(/Ingested 1 document/i, { timeout: 10_000 });
     await expect(async () => {
       const after = await page.getByTestId('docs-list').getByRole('listitem').count();
       expect(after).toBeGreaterThanOrEqual(before + 1);

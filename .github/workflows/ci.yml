@@ -4,6 +4,8 @@ on:
   push:
   pull_request:
   workflow_dispatch:
+  schedule:
+    - cron: '0 2 * * *' # nightly at 02:00 UTC
 
 jobs:
   build-test:
@@ -56,3 +58,4 @@ jobs:
         with:
           name: playwright-report
           path: playwright-report
+          retention-days: 7

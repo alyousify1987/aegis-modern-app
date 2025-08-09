@@ -1,5 +1,7 @@
 # 🛡️ Aegis Audit Platform
 
+[![CI](https://github.com/alyousify1987/aegis-modern-app/actions/workflows/ci.yml/badge.svg)](https://github.com/alyousify1987/aegis-modern-app/actions/workflows/ci.yml)
+
 A comprehensive audit management platform for ISO 22000, HACCP, and SFDA compliance with real-time analytics and one-click audit capabilities.
 
 ## 🚀 Features

@@ -68,3 +68,42 @@ jobs:
             test-results
             **/*.zip
           retention-days: 7
+
+      # Ensure a report directory exists even if tests failed, so Pages can deploy something
+      - name: Ensure report exists (placeholder if missing)
+        if: always()
+        run: |
+          if [ ! -f playwright-report/index.html ]; then
+            mkdir -p playwright-report
+            cat > playwright-report/index.html <<'HTML'
+            <!doctype html>
+            <html lang="en"><meta charset="utf-8"/><title>No Report</title>
+            <body style="font-family:sans-serif;padding:2rem">
+            <h1>No Playwright report generated</h1>
+            <p>Tests may have failed before the reporter produced output. Please check the CI logs and uploaded artifacts.</p>
+            </body></html>
+            HTML
+          fi
+
+      - name: Upload Pages artifact (Playwright HTML report)
+        if: always()
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: playwright-report
+
+  deploy-pages:
+    needs: build-test
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    concurrency:
+      group: pages
+      cancel-in-progress: true
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

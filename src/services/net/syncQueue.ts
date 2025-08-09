@@ -15,6 +15,7 @@ export type SyncTask = {
 const db = getDb();
 let inited = false;
 let processing = false;
+let currentPromise: Promise<void> | null = null;
 
 async function ensure(){ if(!inited){ await ensureDb(); inited = true; } }
 
@@ -40,31 +41,41 @@ async function removeTask(id: string){
 
 function sleep(ms: number){ return new Promise(r => setTimeout(r, ms)); }
 
-export async function processQueue(){
-  if(processing) return; processing = true;
-  try{
-    if(!isOnline()) return;
-    const tasks = await getAllTasks();
-    for(const t of tasks){
-      const attempt = t.attempts || 0;
-      const base = Math.min(1000 * Math.pow(2, attempt), 30000);
-      const jitter = Math.floor(Math.random() * 300);
-      const backoff = base + jitter;
-      await sleep(backoff);
-      try{
-        const res = await apiFetch(t.path, { method: t.method, body: t.body ? JSON.stringify(t.body) : undefined, headers: t.headers});
-        if(res.ok){ await removeTask(t.id); }
-        else {
-          const next = attempt + 1;
+export async function processQueue(): Promise<void> {
+  if (processing) {
+    // If already processing, return the inflight promise so callers can await completion
+    return currentPromise ?? Promise.resolve();
+  }
+  processing = true;
+  currentPromise = (async () => {
+    try{
+      if(!isOnline()) return;
+      const tasks = await getAllTasks();
+      for(const t of tasks){
+        const attempt = t.attempts || 0;
+        const base = Math.min(1000 * Math.pow(2, attempt), 30000);
+        const jitter = Math.floor(Math.random() * 300);
+        const backoff = base + jitter;
+        await sleep(backoff);
+        try{
+          const res = await apiFetch(t.path, { method: t.method, body: t.body ? JSON.stringify(t.body) : undefined, headers: t.headers});
+          if(res.ok){ await removeTask(t.id); }
+          else {
+            const next = attempt + 1;
+            if(next >= 8) { await removeTask(t.id); } else { await db.put('sync', { ...t, attempts: next } as any); }
+          }
+        } catch{
+          const next = (t.attempts||0) + 1;
           if(next >= 8) { await removeTask(t.id); } else { await db.put('sync', { ...t, attempts: next } as any); }
         }
-      } catch{
-        const next = (t.attempts||0) + 1;
-        if(next >= 8) { await removeTask(t.id); } else { await db.put('sync', { ...t, attempts: next } as any); }
+        if(!isOnline()) break;
       }
-      if(!isOnline()) break;
+    } finally {
+      processing = false;
+      currentPromise = null;
     }
-  } finally { processing = false; }
+  })();
+  return currentPromise;
 }
 
 onOnlineChange(() => { if(isOnline()) void processQueue(); });

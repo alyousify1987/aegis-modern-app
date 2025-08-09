@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Box, Button, Card, CardContent, Typography, List, ListItem, ListItemText, Chip } from '@mui/material';
-import { getDexieAsync } from '../../services/db/dexie';
 import { evaluateRules, demoRules } from '../../services/ai/rules';
+import { apiJson } from '../../utils/api';
+import { isOnline, onOnlineChange } from '../../services/net/health';
+import { enqueue as enqueueSync, processQueue } from '../../services/net/syncQueue';
 
 export function NcrHub(){
   const [ncrs, setNcrs] = useState<any[]>([]);
@@ -9,24 +11,54 @@ export function NcrHub(){
 
   async function refresh(){
     try{
-  const db = await getDexieAsync();
-      const all = db ? await db.table('ncrs').toArray() : [];
-      setNcrs(all);
+      const json = await apiJson<{ data: any[] }>('/api/ncrs');
+      setNcrs(Array.isArray(json.data) ? json.data : []);
+      setStatus('');
     }catch(e:any){ setStatus(e?.message||String(e)); }
   }
 
   useEffect(()=>{ void refresh(); },[]);
 
+  // When back online, process queue then reload from server
+  useEffect(() => {
+    const unsub = onOnlineChange(() => {
+      if (isOnline()) {
+        void (async () => {
+          try { await processQueue(); } finally { await refresh(); }
+        })();
+      }
+    });
+    return () => { unsub && unsub(); };
+  }, []);
+
+  // Hidden test hook similar to ActionHub
+  useEffect(() => {
+    (window as any).__forceQueueProcessNcr = async () => {
+      await processQueue();
+      await refresh();
+    };
+    return () => { try { delete (window as any).__forceQueueProcessNcr; } catch {} };
+  }, []);
+
   async function raiseMockNcr(){
     try{
-  const db = await getDexieAsync();
-      const id = `ncr_${Date.now()}`;
       const facts = { severity: 'minor', overdue: Math.random() > 0.5 };
       const { events } = await evaluateRules(demoRules, facts);
       const severity = events.length ? 'major' : 'minor';
-      await db.table('ncrs').add({ id, title: 'Mock NCR', severity, status: 'open', createdAt: Date.now(), updatedAt: Date.now() });
-  await refresh();
-  setStatus('Raised mock NCR');
+      if (!isOnline()){
+        // Optimistic add + queue
+        const temp = { id: `temp_ncr_${Date.now()}`, title: 'Mock NCR', severity, status: 'open', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+        setNcrs(prev => [temp, ...prev]);
+        await enqueueSync({ method: 'POST', path: '/api/ncrs', body: { title: 'Mock NCR', severity, status: 'open' } });
+        setStatus('Raised mock NCR');
+        return;
+      }
+      const json = await apiJson<{ data: any }>(
+        '/api/ncrs',
+        { method: 'POST', body: JSON.stringify({ title: 'Mock NCR', severity, status: 'open' }) }
+      );
+      if (json?.data){ setNcrs(prev => [json.data, ...prev]); }
+      setStatus('Raised mock NCR');
     }catch(e:any){ setStatus(e?.message||String(e)); }
   }
 
@@ -42,6 +74,7 @@ export function NcrHub(){
       <Card>
         <CardContent>
           <Typography color="text.secondary" mb={2} data-testid="ncr-status">{status || `Total: ${ncrs.length}`}</Typography>
+          <Typography variant="h6" component="div" data-testid="ncr-total-value" sx={{ display: 'none' }}>{ncrs.length}</Typography>
           <List dense data-testid="ncr-list">
             {ncrs.map(n => (
               <ListItem key={n.id} secondaryAction={<Chip size="small" label={n.severity} color={n.severity==='major'?'error':'warning'} />}>

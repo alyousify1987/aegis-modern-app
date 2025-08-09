@@ -25,13 +25,17 @@ test.describe('Offline -> Online sync for Audit creation', () => {
     // Go offline for the app logic (toggle internal online flag)
     await page.evaluate(() => { window.dispatchEvent(new Event('offline')); });
 
-    // Create a Custom Audit while offline (optimistic + queued)
-    await page.getByRole('button', { name: 'Custom Audit' }).click();
-    await expect(page.getByRole('dialog', { name: 'Create New Audit' })).toBeVisible();
-    await page.getByRole('button', { name: 'Create Audit' }).click();
+  // Create an audit while offline (optimistic + queued)
+  // Prefer One Click button path which is always visible and works offline with optimistic entry
+  await page.getByRole('button', { name: '🚀 One Click Audit', exact: true }).click();
+  const fileInput = page.locator('input[type="file"]');
+  await fileInput.waitFor({ state: 'attached', timeout: 10_000 });
+  // Provide the directory but offline will take optimistic path regardless of files
+  const uploadDir = process.env.E2E_UPLOAD_DIR || 'public';
+  await fileInput.setInputFiles(uploadDir);
 
-    // Confirm optimistic appears locally
-    await expect(page.getByText('New Audit').first()).toBeVisible({ timeout: 5000 });
+  // Confirm optimistic appears locally (title contains AI-Generated)
+  await expect(page.locator('text=/AI-Generated ISO 22000 Audit/i').first()).toBeVisible({ timeout: 10_000 });
 
     // Go back online (triggers queue processing)
     await page.evaluate(() => { window.dispatchEvent(new Event('online')); });

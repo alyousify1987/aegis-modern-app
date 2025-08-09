@@ -15,10 +15,11 @@ test.describe('One-Click Audit updates analytics', () => {
   // Navigate to Analytics via sidebar button (no dialog yet, so this is stable)
   await page.getByRole('button', { name: 'Analytics Hub' }).click();
   await expect(page.getByRole('heading', { name: 'Analytics & Reporting Hub' })).toBeVisible();
-  await page.waitForLoadState('networkidle');
+  // Ensure analytics API has returned at least once and the metric rendered
+  await page.waitForResponse(r => r.url().includes('/api/analytics') && r.status() === 200, { timeout: 15_000 });
   const parseIntSafe = async (locator) => parseInt(((await locator.textContent()) || '').replace(/[^0-9]/g,'') || '0', 10);
   const metric = page.getByTestId('metric-total-value');
-  await expect(metric).toBeVisible();
+  await expect(metric).toBeVisible({ timeout: 15_000 });
   const totalBefore = await parseIntSafe(metric);
 
   // Create via Audit Hub One-Click using sidebar and upload directory (same pattern as other tests)

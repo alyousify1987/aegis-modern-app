@@ -46,6 +46,8 @@ import {
 } from '@mui/icons-material';
 import type { Action, ActionType, Priority, ActionStatus } from '../../types';
 import { apiFetch, apiJson } from '../../utils/api';
+import { isOnline, onOnlineChange } from '../../services/net/health';
+import { enqueue as enqueueSync, processQueue } from '../../services/net/syncQueue';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -91,21 +93,37 @@ export function ActionHub() {
     dueDate: '',
   });
 
+  const load = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const json = await apiJson<{ data: any[] }>(`/api/actions`);
+      const list = Array.isArray(json.data) ? json.data.map(hydrateAction) : [];
+      setActions(list);
+    } catch (e: any) {
+      setError(e?.message || 'Failed to load actions');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { void load(); }, []);
+
+  // When coming back online, process the sync queue and then reload from server
   useEffect(() => {
-    const load = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-  const json = await apiJson<{ data: any[] }>(`/api/actions`);
-  const list = Array.isArray(json.data) ? json.data.map(hydrateAction) : [];
-        setActions(list);
-      } catch (e: any) {
-        setError(e?.message || 'Failed to load actions');
-      } finally {
-        setLoading(false);
+    const unsub = onOnlineChange(() => {
+      if (isOnline()) {
+        void (async () => {
+          try {
+            await processQueue();
+          } finally {
+            // After processing, fetch latest from server to reflect persisted state
+            await load();
+          }
+        })();
       }
-    };
-    load();
+    });
+    return () => { unsub && unsub(); };
   }, []);
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
@@ -129,6 +147,33 @@ export function ActionHub() {
   };
 
   const handleCreateSubmit = async () => {
+    // If offline, optimistically add and enqueue for sync; otherwise call API
+    if (!isOnline()) {
+      const now = new Date();
+      const temp: Action = {
+        id: `temp_action_${Date.now()}`,
+        title: newAction.title || 'New Action',
+        description: newAction.description || '',
+        type: (newAction.type || 'corrective') as ActionType,
+        priority: (newAction.priority || 'medium') as Priority,
+        status: 'open',
+        assignedTo: newAction.assignedTo || 'Unassigned',
+        createdBy: 'system',
+        dueDate: newAction.dueDate ? new Date(newAction.dueDate) : now,
+        linkedFindings: [],
+        linkedRisks: [],
+        linkedAudits: [],
+        progress: 0,
+        comments: [],
+        createdAt: now,
+        updatedAt: now,
+      };
+      setActions(prev => [temp, ...prev]);
+      await enqueueSync({ method: 'POST', path: '/api/actions', body: newAction });
+      handleCreateDialogClose();
+      return;
+    }
+
     try {
       const json = await apiJson<{ data: any }>(`/api/actions`, {
         method: 'POST',
@@ -141,6 +186,15 @@ export function ActionHub() {
       handleCreateDialogClose();
     }
   };
+
+  // Hidden test hook: in E2E we can call window.__forceQueueProcess?.() to flush queue then reload
+  useEffect(() => {
+    (window as any).__forceQueueProcess = async () => {
+      await processQueue();
+      await load();
+    };
+    return () => { try { delete (window as any).__forceQueueProcess; } catch {} };
+  }, []);
 
   const handleDelete = async (id: string) => {
     try {
@@ -226,13 +280,16 @@ export function ActionHub() {
         <Typography variant="h4" component="h1">
           Action & Task Hub
         </Typography>
-        <Button
+  <Box display="flex" gap={1}>
+  <Button
           variant="contained"
           startIcon={<AddIcon />}
           onClick={handleCreateAction}
         >
           New Action
         </Button>
+  <Button variant="outlined" onClick={() => void load()}>Refresh</Button>
+  </Box>
       </Box>
 
       <Typography variant="subtitle1" color="text.secondary" mb={3}>
@@ -248,7 +305,7 @@ export function ActionHub() {
                 <TaskIcon color="primary" sx={{ mr: 1 }} />
                 <Typography variant="h6">Total Actions</Typography>
               </Box>
-              <Typography variant="h3" component="div" fontWeight="bold">
+              <Typography variant="h3" component="div" fontWeight="bold" data-testid="actions-total-value">
                 {actions.length}
               </Typography>
               <Typography variant="body2" color="text.secondary">

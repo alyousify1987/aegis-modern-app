@@ -34,7 +34,7 @@ test.describe('Documents, NCR, RTL, Diagnostics', () => {
       const after = await page.getByTestId('ncr-list').getByRole('listitem').count();
       expect(after).toBeGreaterThanOrEqual(before + 1);
     }).toPass({ timeout: 10_000 });
-  await expect(page.getByTestId('ncr-list').getByText('Mock NCR', { exact: false })).toBeVisible();
+  await expect(page.getByTestId('ncr-list').getByText('Mock NCR', { exact: false }).first()).toBeVisible();
   });
 
   test('RTL toggle: switch to Arabic and back', async ({ page }) => {

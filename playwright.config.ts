@@ -15,7 +15,9 @@ if (!process.env.E2E_UPLOAD_DIR && fs.existsSync(defaultUploadDir)) {
 
 export default defineConfig({
   testDir: 'tests/e2e',
-  fullyParallel: true,
+  // Run sequentially to avoid cross-test interference with shared dev API state
+  fullyParallel: false,
+  workers: 1,
   retries: process.env.CI ? 1 : 0,
   timeout: 60_000,
   expect: { timeout: 10_000 },

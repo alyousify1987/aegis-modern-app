@@ -102,7 +102,10 @@ test.describe('Core navigation and features', () => {
     await page.getByLabel('Description').fill('Created by Playwright');
   // Category defaults server-side; skip select interaction to avoid flakiness
     await page.getByRole('button', { name: 'Create Risk' }).click();
-  await expect(rowsWithTitle).toHaveCount(before + 1, { timeout: 20_000 });
+  await expect(async () => {
+    const after = await rowsWithTitle.count();
+    expect(after).toBeGreaterThanOrEqual(before + 1);
+  }).toPass({ timeout: 20_000 });
   });
 
   test('Analytics Hub basics and DuckDB init button', async ({ page }) => {

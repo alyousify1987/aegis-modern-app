@@ -60,11 +60,12 @@ function readData() {
       users: parsed.users || [],
       risks: parsed.risks || [],
       actions: parsed.actions || [],
+      ncrs: parsed.ncrs || [],
       knowledge: parsed.knowledge || []
     };
   } catch (error) {
     console.error('Error reading data:', error);
-    return { audits: [], analytics: {}, users: [], risks: [], actions: [], knowledge: [] };
+    return { audits: [], analytics: {}, users: [], risks: [], actions: [], ncrs: [], knowledge: [] };
   }
 }
 
@@ -444,6 +445,53 @@ app.delete('/api/risks/:id', (req, res) => {
   if (data.risks.length === before) return res.status(404).json({ error: 'Not found' });
   if (writeData(data)) return res.json({ message: 'Risk deleted' });
   res.status(500).json({ error: 'Failed to delete risk' });
+});
+
+// NCRs endpoints
+app.get('/api/ncrs', (req, res) => {
+  const data = readData();
+  res.json({ data: data.ncrs || [] });
+});
+
+app.get('/api/ncrs/:id', (req, res) => {
+  const data = readData();
+  const item = (data.ncrs || []).find(n => n.id === req.params.id);
+  if (!item) return res.status(404).json({ error: 'Not found' });
+  res.json({ data: item });
+});
+
+app.post('/api/ncrs', (req, res) => {
+  const data = readData();
+  const { title = 'NCR', severity = 'minor', status = 'open' } = req.body || {};
+  const id = `ncr_${Date.now()}`;
+  const now = new Date().toISOString();
+  const newNcr = { id, title, severity, status, createdAt: now, updatedAt: now };
+  data.ncrs = data.ncrs || [];
+  data.ncrs.push(newNcr);
+  if (writeData(data)) return res.json({ data: newNcr, message: 'NCR created' });
+  res.status(500).json({ error: 'Failed to create NCR' });
+});
+
+app.put('/api/ncrs/:id', (req, res) => {
+  const data = readData();
+  const idx = (data.ncrs || []).findIndex(n => n.id === req.params.id);
+  if (idx === -1) return res.status(404).json({ error: 'Not found' });
+  const now = new Date().toISOString();
+  const current = data.ncrs[idx];
+  const updates = req.body || {};
+  const updated = { ...current, ...updates, updatedAt: now };
+  data.ncrs[idx] = updated;
+  if (writeData(data)) return res.json({ data: updated, message: 'NCR updated' });
+  res.status(500).json({ error: 'Failed to update NCR' });
+});
+
+app.delete('/api/ncrs/:id', (req, res) => {
+  const data = readData();
+  const before = (data.ncrs || []).length;
+  data.ncrs = (data.ncrs || []).filter(n => n.id !== req.params.id);
+  if (data.ncrs.length === before) return res.status(404).json({ error: 'Not found' });
+  if (writeData(data)) return res.json({ message: 'NCR deleted' });
+  res.status(500).json({ error: 'Failed to delete NCR' });
 });
 
 // Actions endpoints

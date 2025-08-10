@@ -26,7 +26,7 @@ test.describe('Documents, NCR, RTL, Diagnostics', () => {
 
   test('NCR: raise mock NCR and see it listed', async ({ page }) => {
     await login(page);
-    await page.getByRole('button', { name: 'NCRs' }).click();
+    await page.getByRole('button', { name: 'NCR Hub' }).click();
     await expect(page.getByRole('heading', { name: 'Non-Conformance & CAPA' })).toBeVisible();
     const before = await page.getByTestId('ncr-list').getByRole('listitem').count();
     await page.getByRole('button', { name: 'Raise Mock NCR' }).click();

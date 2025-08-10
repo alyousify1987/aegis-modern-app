@@ -204,12 +204,99 @@ app.get('/api/findings', (req, res) => {
   });
 });
 
-app.post('/api/audits/one-click', (req, res) => {
+// NCR endpoints
+app.get('/api/ncrs', (req, res) => {
   res.json({
-    message: 'One-click audit initiated',
-    auditId: 'new-audit-' + Date.now(),
-    status: 'processing',
-    estimatedCompletion: new Date(Date.now() + 5 * 60 * 1000)
+    data: [
+      {
+        id: '1',
+        title: 'Non-conformance in Temperature Control',
+        severity: 'major',
+        status: 'OPEN',
+        auditId: '1',
+        clause: '7.2.3',
+        description: 'Temperature monitoring system failure in cold storage',
+        createdAt: '2024-01-16',
+        department: 'Production'
+      },
+      {
+        id: '2',
+        title: 'Documentation Missing',
+        severity: 'minor',
+        status: 'IN_PROGRESS',
+        auditId: '2',
+        clause: '4.2.4',
+        description: 'Training records not properly maintained',
+        createdAt: '2024-01-17',
+        department: 'Quality'
+      }
+    ],
+    total: 2
+  });
+});
+
+app.post('/api/ncrs', (req, res) => {
+  const { title, severity, description, clause, department } = req.body;
+  
+  const newNCR = {
+    id: `ncr-${Date.now()}`,
+    title: title || 'New Non-Conformance',
+    severity: severity || 'minor',
+    status: 'OPEN',
+    auditId: 'audit-current',
+    clause: clause || '4.1',
+    description: description || 'Auto-generated NCR',
+    createdAt: new Date().toISOString(),
+    department: department || 'General'
+  };
+  
+  logger.info(`📋 New NCR created: ${newNCR.id} - ${title}`);
+  
+  return res.status(201).json({
+    data: newNCR,
+    message: 'NCR created successfully'
+  });
+});
+
+app.post('/api/audits/one-click', (req, res) => {
+  const { type = 'ISO 22000', department = 'Production' } = req.body;
+  
+  const auditId = `audit-${Date.now()}`;
+  const estimatedCompletion = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
+  
+  logger.info(`🚀 One-click audit initiated: ${auditId} for ${department} department`);
+  
+  res.json({
+    auditId,
+    message: 'One-click audit initiated successfully',
+    estimatedCompletion: estimatedCompletion.toISOString(),
+    status: 'INITIATED',
+    type,
+    department,
+    checklist: {
+      totalItems: 45,
+      completedItems: 0,
+      categories: ['Documentation', 'Processes', 'Training', 'Records']
+    },
+    assignedAuditor: 'System Auto-Assign'
+  });
+});
+
+// Analytics endpoints
+app.get('/api/analytics', (req, res) => {
+  res.json({
+    data: {
+      totalAudits: 42,
+      completedAudits: 35,
+      pendingActions: 18,
+      criticalFindings: 3,
+      riskScore: 2.4,
+      metrics: {
+        total: 42,
+        completed: 35,
+        pending: 7
+      }
+    }
   });
 });
 

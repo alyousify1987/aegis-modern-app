@@ -18,7 +18,7 @@ test.describe('Offline -> Online sync for NCR creation', () => {
     await login(page);
 
     // Navigate to NCRs and capture baseline
-    await openMenu(page, 'NCRs');
+    await openMenu(page, 'NCR Hub');
     await expect(page.getByRole('heading', { name: 'Non-Conformance & CAPA' })).toBeVisible();
     const total = page.getByTestId('ncr-total-value');
     const before = Number(await total.textContent());

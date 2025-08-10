@@ -1,7 +1,10 @@
 // Simple online/offline watcher and optional API ping
 import { apiFetch } from '../../utils/api';
 
-let online = typeof navigator !== 'undefined' ? navigator.onLine : true;
+// Ensure boolean default even if a polyfilled navigator lacks onLine
+let online = (typeof navigator !== 'undefined' && typeof (navigator as any).onLine === 'boolean')
+  ? (navigator as any).onLine as boolean
+  : true;
 const subs = new Set<() => void>();
 
 function notify() { subs.forEach((fn) => { try { fn(); } catch {} }); }

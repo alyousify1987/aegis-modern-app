@@ -39,6 +39,11 @@ import {
   AccountCircle,
   PlayArrow,
   BuildCircle as DiagnosticsIcon,
+  TrackChanges as ObjectivesIcon,
+  Business as ExternalAuditorIcon,
+  Gavel as ManagementReviewIcon,
+  Person as InternalAuditorIcon,
+  SmartToy as AiAssistantIcon,
 } from '@mui/icons-material';
 import CircleIcon from '@mui/icons-material/Circle';
 import { useEffect } from 'react';
@@ -59,7 +64,7 @@ interface LayoutProps {
 }
 
 interface MenuItemData {
-  key: 'menu_dashboard' | 'menu_audit' | 'menu_compliance' | 'menu_documents' | 'menu_ncrs' | 'menu_risk' | 'menu_actions' | 'menu_knowledge' | 'menu_analytics' | 'menu_diagnostics';
+  key: 'menu_dashboard' | 'menu_audit' | 'menu_compliance' | 'menu_documents' | 'menu_ncrs' | 'menu_risk' | 'menu_actions' | 'menu_knowledge' | 'menu_analytics' | 'menu_diagnostics' | 'menu_objectives' | 'menu_external_auditor' | 'menu_management_review' | 'menu_internal_auditor' | 'menu_ai_assistant';
   icon: ReactNode;
   view: CurrentView;
 }
@@ -75,6 +80,11 @@ const menuItems: MenuItemData[] = [
   { key: 'menu_knowledge', icon: <KnowledgeIcon />, view: 'knowledge' },
   { key: 'menu_analytics', icon: <AnalyticsIcon />, view: 'analytics' },
   { key: 'menu_diagnostics', icon: <DiagnosticsIcon />, view: 'diagnostics' },
+  { key: 'menu_objectives', icon: <ObjectivesIcon />, view: 'objectives' },
+  { key: 'menu_external_auditor', icon: <ExternalAuditorIcon />, view: 'external-auditor' },
+  { key: 'menu_management_review', icon: <ManagementReviewIcon />, view: 'management-review' },
+  { key: 'menu_internal_auditor', icon: <InternalAuditorIcon />, view: 'internal-auditor' },
+  { key: 'menu_ai_assistant', icon: <AiAssistantIcon />, view: 'ai-assistant' },
 ];
 
 const viewToKey: Record<CurrentView, MenuItemData['key']> = {
@@ -88,6 +98,11 @@ const viewToKey: Record<CurrentView, MenuItemData['key']> = {
   knowledge: 'menu_knowledge',
   analytics: 'menu_analytics',
   diagnostics: 'menu_diagnostics',
+  objectives: 'menu_objectives',
+  'external-auditor': 'menu_external_auditor',
+  'management-review': 'menu_management_review',
+  'internal-auditor': 'menu_internal_auditor',
+  'ai-assistant': 'menu_ai_assistant',
 };
 
 export function Layout({ children, currentView, setCurrentView, onLogout }: LayoutProps) {

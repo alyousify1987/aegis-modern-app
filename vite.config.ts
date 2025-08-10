@@ -78,6 +78,26 @@ export default defineConfig(async () => ({
     }),
   ],
 
+  // Define external modules for browser compatibility
+  define: {
+    global: 'globalThis',
+  },
+
+  optimizeDeps: {
+    exclude: ['@duckdb/duckdb-wasm']
+  },
+
+  build: {
+    target: 'es2020',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+        },
+      },
+    },
+  },
+
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
   //
   // 1. prevent Vite from obscuring rust errors

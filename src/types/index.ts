@@ -42,7 +42,7 @@ export interface Certification {
 }
 
 export type UserRole = 'admin' | 'auditor' | 'manager' | 'viewer' | 'compliance_officer';
-export type CurrentView = 'dashboard' | 'audit' | 'compliance' | 'documents' | 'ncrs' | 'risk' | 'actions' | 'knowledge' | 'analytics' | 'diagnostics';
+export type CurrentView = 'dashboard' | 'audit' | 'compliance' | 'documents' | 'ncrs' | 'risk' | 'actions' | 'knowledge' | 'analytics' | 'diagnostics' | 'objectives' | 'external-auditor' | 'management-review' | 'internal-auditor' | 'ai-assistant';
 
 export interface Audit {
   id: string;

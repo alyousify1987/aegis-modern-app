@@ -17,36 +17,48 @@
     "smoke": "node ./scripts/smoke.mjs",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-  "test:e2e:headed": "playwright test --headed",
-  "ci:e2e": "npx playwright install --with-deps && npx playwright test --reporter=html",
-  "ci:all": "npm run -s typecheck && npm run -s build && npm run -s smoke && npm run -s ci:e2e"
+    "test:e2e:headed": "playwright test --headed",
+    "ci:e2e": "npx playwright install --with-deps && npx playwright test --reporter=html",
+    "ci:unit": "vitest run --coverage",
+    "ci:all": "npm run -s typecheck && npm run -s build && npm run -s ci:unit && npm run -s smoke && npm run -s ci:e2e"
   },
   "dependencies": {
     "@duckdb/duckdb-wasm": "^1.29.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^5.18.0",
+    "@mui/lab": "^7.0.0-beta.16",
     "@mui/material": "^5.18.0",
     "@mui/system": "^7.3.1",
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-opener": "^2",
-  "dexie": "^4.0.8",
-  "json-rules-engine": "^7.3.1",
-  "onnxruntime-web": "^1.18.0",
+    "@types/json-rules-engine": "^4.0.1",
+    "compromise": "^14.14.4",
+    "dexie": "^4.0.8",
+    "json-rules-engine": "^7.3.1",
+    "natural": "^8.1.0",
+    "node-nlp": "^5.0.0-alpha.5",
+    "onnxruntime-web": "^1.18.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-  "tesseract.js": "^5.1.0",
-    "stylis-plugin-rtl": "^2.1.1"
+    "recharts": "^3.1.2",
+    "stylis-plugin-rtl": "^2.1.1",
+    "tesseract.js": "^5.1.0",
+    "xlsx": "^0.18.5",
+    "zustand": "^5.0.7"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.10.1",
     "@playwright/test": "^1.54.2",
     "@tauri-apps/cli": "^2",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "^4.6.0",
+    "@vitest/coverage-v8": "^2.0.5",
     "concurrently": "^8.2.2",
     "typescript": "~5.8.3",
     "vite": "^7.0.4",
-    "vite-plugin-pwa": "^1.0.2"
+    "vite-plugin-pwa": "^1.0.2",
+    "vitest": "^2.0.5"
   }
 }

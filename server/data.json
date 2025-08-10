@@ -2442,10 +2442,428 @@
       ],
       "createdAt": "2025-08-09T21:28:32.245Z",
       "updatedAt": "2025-08-09T21:28:32.245Z"
+    },
+    {
+      "id": "audit_1754775832924",
+      "title": "AI-Generated ISO 22000 Audit - 8/10/2025",
+      "description": "Comprehensive AI-generated audit covering all critical control points and compliance requirements",
+      "type": "internal",
+      "standard": "ISO_22000",
+      "status": "planned",
+      "scope": "Production department, Critical control points, Documentation review",
+      "startDate": "2025-08-09",
+      "endDate": "2025-08-16",
+      "leadAuditor": "AI Assistant",
+      "auditors": [
+        "AI Assistant",
+        "Quality Manager"
+      ],
+      "auditees": [
+        "Production Manager",
+        "Staff Representatives"
+      ],
+      "createdAt": "2025-08-09T21:43:52.938Z",
+      "updatedAt": "2025-08-09T21:43:52.938Z"
+    },
+    {
+      "id": "audit_1754784592236",
+      "title": "AI-Generated ISO 22000 Audit - 8/10/2025",
+      "description": "Comprehensive AI-generated audit covering all critical control points and compliance requirements",
+      "type": "internal",
+      "standard": "ISO_22000",
+      "status": "planned",
+      "scope": "Production department, Critical control points, Documentation review",
+      "startDate": "2025-08-10",
+      "endDate": "2025-08-17",
+      "leadAuditor": "AI Assistant",
+      "auditors": [
+        "AI Assistant",
+        "Quality Manager"
+      ],
+      "auditees": [
+        "Production Manager",
+        "Staff Representatives"
+      ],
+      "createdAt": "2025-08-10T00:09:52.264Z",
+      "updatedAt": "2025-08-10T00:09:52.264Z"
+    },
+    {
+      "id": "audit_1754784636830",
+      "title": "AI-Generated ISO 22000 Audit - 8/10/2025",
+      "description": "Comprehensive AI-generated audit covering all critical control points and compliance requirements",
+      "type": "internal",
+      "standard": "ISO_22000",
+      "status": "planned",
+      "scope": "Production department, Critical control points, Documentation review",
+      "startDate": "2025-08-10",
+      "endDate": "2025-08-17",
+      "leadAuditor": "AI Assistant",
+      "auditors": [
+        "AI Assistant",
+        "Quality Manager"
+      ],
+      "auditees": [
+        "Production Manager",
+        "Staff Representatives"
+      ],
+      "createdAt": "2025-08-10T00:10:36.830Z",
+      "updatedAt": "2025-08-10T00:10:36.830Z"
+    },
+    {
+      "id": "audit_1754784674918",
+      "title": "AI-Generated ISO 22000 Audit - 8/10/2025",
+      "description": "Comprehensive AI-generated audit covering all critical control points and compliance requirements",
+      "type": "internal",
+      "standard": "ISO_22000",
+      "status": "planned",
+      "scope": "Production department, Critical control points, Documentation review",
+      "startDate": "2025-08-10",
+      "endDate": "2025-08-17",
+      "leadAuditor": "AI Assistant",
+      "auditors": [
+        "AI Assistant",
+        "Quality Manager"
+      ],
+      "auditees": [
+        "Production Manager",
+        "Staff Representatives"
+      ],
+      "createdAt": "2025-08-10T00:11:14.918Z",
+      "updatedAt": "2025-08-10T00:11:14.918Z"
+    },
+    {
+      "id": "audit_1754784679789",
+      "title": "AI-Generated ISO 22000 Audit - 8/10/2025",
+      "description": "Comprehensive AI-generated audit covering all critical control points and compliance requirements",
+      "type": "internal",
+      "standard": "ISO_22000",
+      "status": "planned",
+      "scope": "Production department, Critical control points, Documentation review",
+      "startDate": "2025-08-10",
+      "endDate": "2025-08-17",
+      "leadAuditor": "AI Assistant",
+      "auditors": [
+        "AI Assistant",
+        "Quality Manager"
+      ],
+      "auditees": [
+        "Production Manager",
+        "Staff Representatives"
+      ],
+      "createdAt": "2025-08-10T00:11:19.789Z",
+      "updatedAt": "2025-08-10T00:11:19.789Z"
+    },
+    {
+      "id": "audit_1754784704593",
+      "title": "AI-Generated ISO 22000 Audit - 8/10/2025",
+      "description": "Comprehensive AI-generated audit covering all critical control points and compliance requirements",
+      "type": "internal",
+      "standard": "ISO_22000",
+      "status": "planned",
+      "scope": "Production department, Critical control points, Documentation review",
+      "startDate": "2025-08-10",
+      "endDate": "2025-08-17",
+      "leadAuditor": "AI Assistant",
+      "auditors": [
+        "AI Assistant",
+        "Quality Manager"
+      ],
+      "auditees": [
+        "Production Manager",
+        "Staff Representatives"
+      ],
+      "createdAt": "2025-08-10T00:11:44.593Z",
+      "updatedAt": "2025-08-10T00:11:44.593Z"
+    },
+    {
+      "id": "audit_1754784721655",
+      "title": "AI-Generated ISO 22000 Audit - 8/10/2025",
+      "description": "Comprehensive AI-generated audit covering all critical control points and compliance requirements",
+      "type": "internal",
+      "standard": "ISO_22000",
+      "status": "planned",
+      "scope": "Production department, Critical control points, Documentation review",
+      "startDate": "2025-08-10",
+      "endDate": "2025-08-17",
+      "leadAuditor": "AI Assistant",
+      "auditors": [
+        "AI Assistant",
+        "Quality Manager"
+      ],
+      "auditees": [
+        "Production Manager",
+        "Staff Representatives"
+      ],
+      "createdAt": "2025-08-10T00:12:01.655Z",
+      "updatedAt": "2025-08-10T00:12:01.655Z"
+    },
+    {
+      "id": "audit_1754784801325",
+      "title": "AI-Generated ISO_22000 Audit - 8/10/2025",
+      "description": "Comprehensive AI-generated audit covering all critical control points and compliance requirements",
+      "type": "internal",
+      "standard": "ISO_22000",
+      "status": "planned",
+      "scope": "Custom department, Critical control points, Documentation review",
+      "startDate": "2025-08-10",
+      "endDate": "2025-08-17",
+      "leadAuditor": "AI Assistant",
+      "auditors": [
+        "AI Assistant",
+        "Quality Manager"
+      ],
+      "auditees": [
+        "Custom Manager",
+        "Staff Representatives"
+      ],
+      "createdAt": "2025-08-10T00:13:21.325Z",
+      "updatedAt": "2025-08-10T00:13:21.325Z"
+    },
+    {
+      "id": "audit_1754784803102",
+      "title": "AI-Generated ISO 22000 Audit - 8/10/2025",
+      "description": "Comprehensive AI-generated audit covering all critical control points and compliance requirements",
+      "type": "internal",
+      "standard": "ISO_22000",
+      "status": "planned",
+      "scope": "Production department, Critical control points, Documentation review",
+      "startDate": "2025-08-10",
+      "endDate": "2025-08-17",
+      "leadAuditor": "AI Assistant",
+      "auditors": [
+        "AI Assistant",
+        "Quality Manager"
+      ],
+      "auditees": [
+        "Production Manager",
+        "Staff Representatives"
+      ],
+      "createdAt": "2025-08-10T00:13:23.102Z",
+      "updatedAt": "2025-08-10T00:13:23.102Z"
+    },
+    {
+      "id": "audit_1754784982828",
+      "title": "AI-Generated ISO 22000 Audit - 8/10/2025",
+      "description": "Comprehensive AI-generated audit covering all critical control points and compliance requirements",
+      "type": "internal",
+      "standard": "ISO_22000",
+      "status": "planned",
+      "scope": "Production department, Critical control points, Documentation review",
+      "startDate": "2025-08-10",
+      "endDate": "2025-08-17",
+      "leadAuditor": "AI Assistant",
+      "auditors": [
+        "AI Assistant",
+        "Quality Manager"
+      ],
+      "auditees": [
+        "Production Manager",
+        "Staff Representatives"
+      ],
+      "createdAt": "2025-08-10T00:16:22.828Z",
+      "updatedAt": "2025-08-10T00:16:22.828Z"
+    },
+    {
+      "id": "audit_1754784988753",
+      "title": "AI-Generated ISO 22000 Audit - 8/10/2025",
+      "description": "Comprehensive AI-generated audit covering all critical control points and compliance requirements",
+      "type": "internal",
+      "standard": "ISO_22000",
+      "status": "planned",
+      "scope": "Production department, Critical control points, Documentation review",
+      "startDate": "2025-08-10",
+      "endDate": "2025-08-17",
+      "leadAuditor": "AI Assistant",
+      "auditors": [
+        "AI Assistant",
+        "Quality Manager"
+      ],
+      "auditees": [
+        "Production Manager",
+        "Staff Representatives"
+      ],
+      "createdAt": "2025-08-10T00:16:28.754Z",
+      "updatedAt": "2025-08-10T00:16:28.754Z"
+    },
+    {
+      "id": "audit_1754784990645",
+      "title": "AI-Generated ISO 22000 Audit - 8/10/2025",
+      "description": "Comprehensive AI-generated audit covering all critical control points and compliance requirements",
+      "type": "internal",
+      "standard": "ISO_22000",
+      "status": "planned",
+      "scope": "Production department, Critical control points, Documentation review",
+      "startDate": "2025-08-10",
+      "endDate": "2025-08-17",
+      "leadAuditor": "AI Assistant",
+      "auditors": [
+        "AI Assistant",
+        "Quality Manager"
+      ],
+      "auditees": [
+        "Production Manager",
+        "Staff Representatives"
+      ],
+      "createdAt": "2025-08-10T00:16:30.645Z",
+      "updatedAt": "2025-08-10T00:16:30.645Z"
+    },
+    {
+      "id": "audit_1754820509050",
+      "title": "AI-Generated ISO 22000 Audit - 8/10/2025",
+      "description": "Comprehensive AI-generated audit covering all critical control points and compliance requirements",
+      "type": "internal",
+      "standard": "ISO_22000",
+      "status": "planned",
+      "scope": "Production department, Critical control points, Documentation review",
+      "startDate": "2025-08-10",
+      "endDate": "2025-08-17",
+      "leadAuditor": "AI Assistant",
+      "auditors": [
+        "AI Assistant",
+        "Quality Manager"
+      ],
+      "auditees": [
+        "Production Manager",
+        "Staff Representatives"
+      ],
+      "createdAt": "2025-08-10T10:08:29.066Z",
+      "updatedAt": "2025-08-10T10:08:29.066Z"
+    },
+    {
+      "id": "audit_1754821473423",
+      "title": "AI-Generated ISO 22000 Audit - 8/10/2025",
+      "description": "Comprehensive AI-generated audit covering all critical control points and compliance requirements",
+      "type": "internal",
+      "standard": "ISO_22000",
+      "status": "planned",
+      "scope": "Production department, Critical control points, Documentation review",
+      "startDate": "2025-08-10",
+      "endDate": "2025-08-17",
+      "leadAuditor": "AI Assistant",
+      "auditors": [
+        "AI Assistant",
+        "Quality Manager"
+      ],
+      "auditees": [
+        "Production Manager",
+        "Staff Representatives"
+      ],
+      "createdAt": "2025-08-10T10:24:33.448Z",
+      "updatedAt": "2025-08-10T10:24:33.448Z"
+    },
+    {
+      "id": "audit_1754821474822",
+      "title": "AI-Generated ISO 22000 Audit - 8/10/2025",
+      "description": "Comprehensive AI-generated audit covering all critical control points and compliance requirements",
+      "type": "internal",
+      "standard": "ISO_22000",
+      "status": "planned",
+      "scope": "Production department, Critical control points, Documentation review",
+      "startDate": "2025-08-10",
+      "endDate": "2025-08-17",
+      "leadAuditor": "AI Assistant",
+      "auditors": [
+        "AI Assistant",
+        "Quality Manager"
+      ],
+      "auditees": [
+        "Production Manager",
+        "Staff Representatives"
+      ],
+      "createdAt": "2025-08-10T10:24:34.822Z",
+      "updatedAt": "2025-08-10T10:24:34.822Z"
+    },
+    {
+      "id": "audit_1754821655893",
+      "title": "AI-Generated ISO 22000 Audit - 8/10/2025",
+      "description": "Comprehensive AI-generated audit covering all critical control points and compliance requirements",
+      "type": "internal",
+      "standard": "ISO_22000",
+      "status": "planned",
+      "scope": "Production department, Critical control points, Documentation review",
+      "startDate": "2025-08-10",
+      "endDate": "2025-08-17",
+      "leadAuditor": "AI Assistant",
+      "auditors": [
+        "AI Assistant",
+        "Quality Manager"
+      ],
+      "auditees": [
+        "Production Manager",
+        "Staff Representatives"
+      ],
+      "createdAt": "2025-08-10T10:27:35.906Z",
+      "updatedAt": "2025-08-10T10:27:35.906Z"
+    },
+    {
+      "id": "audit_1754821657352",
+      "title": "AI-Generated ISO 22000 Audit - 8/10/2025",
+      "description": "Comprehensive AI-generated audit covering all critical control points and compliance requirements",
+      "type": "internal",
+      "standard": "ISO_22000",
+      "status": "planned",
+      "scope": "Production department, Critical control points, Documentation review",
+      "startDate": "2025-08-10",
+      "endDate": "2025-08-17",
+      "leadAuditor": "AI Assistant",
+      "auditors": [
+        "AI Assistant",
+        "Quality Manager"
+      ],
+      "auditees": [
+        "Production Manager",
+        "Staff Representatives"
+      ],
+      "createdAt": "2025-08-10T10:27:37.352Z",
+      "updatedAt": "2025-08-10T10:27:37.352Z"
+    },
+    {
+      "id": "audit_1754825643739",
+      "title": "AI-Generated ISO 22000 Audit - 8/10/2025",
+      "description": "Comprehensive AI-generated audit covering all critical control points and compliance requirements",
+      "type": "internal",
+      "standard": "ISO_22000",
+      "status": "planned",
+      "scope": "Production department, Critical control points, Documentation review",
+      "startDate": "2025-08-10",
+      "endDate": "2025-08-17",
+      "leadAuditor": "AI Assistant",
+      "auditors": [
+        "AI Assistant",
+        "Quality Manager"
+      ],
+      "auditees": [
+        "Production Manager",
+        "Staff Representatives"
+      ],
+      "createdAt": "2025-08-10T11:34:03.755Z",
+      "updatedAt": "2025-08-10T11:34:03.755Z"
+    },
+    {
+      "id": "audit_1754825645249",
+      "title": "AI-Generated ISO 22000 Audit - 8/10/2025",
+      "description": "Comprehensive AI-generated audit covering all critical control points and compliance requirements",
+      "type": "internal",
+      "standard": "ISO_22000",
+      "status": "planned",
+      "scope": "Production department, Critical control points, Documentation review",
+      "startDate": "2025-08-10",
+      "endDate": "2025-08-17",
+      "leadAuditor": "AI Assistant",
+      "auditors": [
+        "AI Assistant",
+        "Quality Manager"
+      ],
+      "auditees": [
+        "Production Manager",
+        "Staff Representatives"
+      ],
+      "createdAt": "2025-08-10T11:34:05.249Z",
+      "updatedAt": "2025-08-10T11:34:05.249Z"
     }
   ],
   "analytics": {
-    "totalAudits": 111,
+    "totalAudits": 130,
     "completedAudits": 12,
     "pendingActions": 5,
     "criticalFindings": 3,
@@ -3125,6 +3543,40 @@
       "createdBy": "system",
       "createdAt": "2025-08-09T21:15:31.064Z",
       "updatedAt": "2025-08-09T21:15:32.132Z"
+    },
+    {
+      "id": "risk_1754784730263",
+      "title": "E2E Test Risk",
+      "description": "Created by Playwright",
+      "category": "",
+      "likelihood": 1,
+      "impact": 1,
+      "riskScore": 1,
+      "status": "identified",
+      "owner": "",
+      "controls": [],
+      "linkedAudits": [],
+      "linkedActions": [],
+      "createdBy": "system",
+      "createdAt": "2025-08-10T00:12:10.263Z",
+      "updatedAt": "2025-08-10T00:12:10.263Z"
+    },
+    {
+      "id": "risk_1754784813008",
+      "title": "E2E Edit Risk UPDATED",
+      "description": "E2E description",
+      "category": "",
+      "likelihood": 1,
+      "impact": 1,
+      "riskScore": 1,
+      "status": "identified",
+      "owner": "",
+      "controls": [],
+      "linkedAudits": [],
+      "linkedActions": [],
+      "createdBy": "system",
+      "createdAt": "2025-08-10T00:13:33.008Z",
+      "updatedAt": "2025-08-10T00:13:34.351Z"
     }
   ],
   "actions": [
@@ -3523,6 +3975,24 @@
       "linkedAudits": [],
       "createdAt": "2025-08-09T21:14:50.794Z",
       "updatedAt": "2025-08-09T21:14:50.794Z"
+    },
+    {
+      "id": "action_1754784747134",
+      "title": "Offline Action",
+      "description": "",
+      "type": "",
+      "priority": "",
+      "status": "open",
+      "assignedTo": "",
+      "createdBy": "system",
+      "dueDate": "2025-08-10T00:12:27.134Z",
+      "progress": 0,
+      "comments": [],
+      "linkedFindings": [],
+      "linkedRisks": [],
+      "linkedAudits": [],
+      "createdAt": "2025-08-10T00:12:27.134Z",
+      "updatedAt": "2025-08-10T00:12:27.134Z"
     }
   ],
   "ncrs": [
@@ -3765,6 +4235,22 @@
       "status": "open",
       "createdAt": "2025-08-09T21:15:08.244Z",
       "updatedAt": "2025-08-09T21:15:08.244Z"
+    },
+    {
+      "id": "ncr_1754784699689",
+      "title": "Mock NCR",
+      "severity": "minor",
+      "status": "open",
+      "createdAt": "2025-08-10T00:11:39.689Z",
+      "updatedAt": "2025-08-10T00:11:39.689Z"
+    },
+    {
+      "id": "ncr_1754784771808",
+      "title": "Mock NCR",
+      "severity": "minor",
+      "status": "open",
+      "createdAt": "2025-08-10T00:12:51.808Z",
+      "updatedAt": "2025-08-10T00:12:51.808Z"
     }
   ],
   "knowledge": []

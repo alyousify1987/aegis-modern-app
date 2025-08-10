@@ -484,7 +484,9 @@ export function RiskHub() {
           Risk Analytics
         </Typography>
         <Typography variant="body1" color="text.secondary">
-          Predictive analytics, trend analysis, and AI-driven risk insights coming soon.
+          <Typography variant="body2" color="text.secondary" textAlign="center">
+            Predictive analytics, trend analysis, and AI-driven risk insights will be available here.
+          </Typography>
         </Typography>
       </TabPanel>
 

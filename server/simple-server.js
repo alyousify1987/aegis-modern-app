@@ -13,8 +13,30 @@ const app = express();
 const port = 3001;
 const JWT_SECRET = process.env.JWT_SECRET || 'aegis_dev_secret_change_me';
 
-app.use(cors());
-app.use(express.json());
+// Configure CORS and middleware
+app.use(cors({
+  origin: ['http://localhost:1420', 'http://127.0.0.1:1420', 'tauri://localhost'],
+  credentials: true
+}));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+
+// Keep-alive and stability improvements
+app.use((req, res, next) => {
+  res.setHeader('Connection', 'keep-alive');
+  res.setHeader('Keep-Alive', 'timeout=5, max=1000');
+  next();
+});
+
+// Health check endpoint for monitoring
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'healthy', 
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    memory: process.memoryUsage()
+  });
+});
 
 // Simple auth middleware (JWT with backward-compat token_*)
 function requireAuth(req, res, next) {
@@ -656,12 +678,54 @@ app.delete('/api/knowledge/:id', (req, res) => {
 
 const server = app.listen(port, () => {
   console.log(`🚀 Simple Aegis Server running on http://localhost:${port}`);
+  console.log(`📊 Health check available at http://localhost:${port}/health`);
+  console.log(`🔧 Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 
-// Keep the process alive
+// Enhanced server stability and keep-alive
+server.keepAliveTimeout = 30000; // 30 seconds
+server.headersTimeout = 35000; // 35 seconds
+server.timeout = 120000; // 2 minutes
+
+// Handle server errors gracefully
+server.on('error', (error) => {
+  console.error('❌ Server error:', error);
+  if (error.code === 'EADDRINUSE') {
+    console.log(`⚠️  Port ${port} is already in use. Please close other instances.`);
+  }
+});
+
+// Graceful shutdown handlers
 process.on('SIGTERM', () => {
-  console.log('SIGTERM received, shutting down gracefully');
+  console.log('🛑 SIGTERM received, shutting down gracefully');
   server.close(() => {
-    console.log('Process terminated');
+    console.log('✅ Server closed successfully');
+    process.exit(0);
   });
 });
+
+process.on('SIGINT', () => {
+  console.log('\n🛑 SIGINT received, shutting down gracefully');
+  server.close(() => {
+    console.log('✅ Server closed successfully');
+    process.exit(0);
+  });
+});
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (error) => {
+  console.error('❌ Uncaught Exception:', error);
+  server.close(() => {
+    process.exit(1);
+  });
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+// Keep process alive and log uptime periodically
+setInterval(() => {
+  const uptime = Math.floor(process.uptime());
+  console.log(`⏱️  Server uptime: ${uptime}s | Memory: ${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB`);
+}, 60000); // Log every minute

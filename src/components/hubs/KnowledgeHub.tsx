@@ -525,7 +525,9 @@ export function KnowledgeHub() {
           Community Q&A
         </Typography>
         <Typography variant="body1" color="text.secondary">
-          Community questions, answers, and knowledge sharing coming soon.
+          <Typography variant="body2" color="text.secondary" textAlign="center">
+            Community questions, answers, and knowledge sharing features will be available here.
+          </Typography>
         </Typography>
       </TabPanel>
 

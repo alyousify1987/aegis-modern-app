@@ -34,6 +34,14 @@ import {
   ListItem,
   ListItemText,
   ListItemIcon,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  FormLabel,
+  LinearProgress,
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -44,6 +52,7 @@ import {
   Assessment as AuditIcon,
   Schedule as ScheduleIcon,
   Person as PersonIcon,
+  ExpandMore as ExpandMoreIcon,
 } from '@mui/icons-material';
 import type { Audit, AuditStatus, StandardType, AuditType } from '../../types';
 import { useToast } from '../../components/ToastProvider';
@@ -54,6 +63,13 @@ import { OfflineBanner } from '../../components/OfflineBanner';
 import { enqueue as enqueueSync } from '../../services/net/syncQueue';
 import { isOnline } from '../../services/net/health';
 import { ProgressDialog } from '../../components/ProgressDialog';
+import { 
+  ISO22000_CLAUSES, 
+  getAllAuditQuestions, 
+  generateAuditSummary,
+  type AuditQuestion,
+  type AuditClause 
+} from '../../data/iso22000Clauses';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -106,7 +122,8 @@ export function AuditHub() {
   });
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [viewAudit, setViewAudit] = useState<Audit | null>(null);
-  const [viewChecklist, setViewChecklist] = useState<Array<{ id: string; text: string; done: boolean }>>([]);
+  const [auditQuestions, setAuditQuestions] = useState<AuditQuestion[]>([]);
+  const [expandedClause, setExpandedClause] = useState<string | false>(false);
   const [progressOpen, setProgressOpen] = useState(false);
   const [progressText, setProgressText] = useState('Preparing...');
 
@@ -154,17 +171,60 @@ export function AuditHub() {
     if (!selectedAuditId) return;
     const a = audits.find(a => a.id === selectedAuditId) || null;
     setViewAudit(a);
-    // Generate a tiny checklist on the fly if missing
-    const base = [
-      'Verify documented procedures exist and are current',
-      'Confirm training records for critical roles',
-      'Review CCP monitoring logs',
-      'Inspect calibration certificates for instruments',
-      'Evaluate previous nonconformities and actions'
-    ];
-    setViewChecklist(base.map((t, i) => ({ id: `${selectedAuditId}-${i}`, text: t, done: false })));
+    
+    // Load complete ISO 22000 audit questions
+    const allQuestions = getAllAuditQuestions();
+    
+    // Check if this audit has saved responses
+    const savedResponses = localStorage.getItem(`audit-responses-${selectedAuditId}`);
+    if (savedResponses) {
+      try {
+        const responses = JSON.parse(savedResponses);
+        const questionsWithResponses = allQuestions.map(q => ({
+          ...q,
+          conformance: responses[q.id]?.conformance || 'pending',
+          evidence: responses[q.id]?.evidence || [],
+          comments: responses[q.id]?.comments || ''
+        }));
+        setAuditQuestions(questionsWithResponses);
+      } catch {
+        setAuditQuestions(allQuestions);
+      }
+    } else {
+      setAuditQuestions(allQuestions);
+    }
+    
     setViewDialogOpen(true);
     handleMenuClose();
+  };
+
+  const handleQuestionResponse = (questionId: string, conformance: string, comments?: string) => {
+    setAuditQuestions(prev => {
+      const updated = prev.map(q => 
+        q.id === questionId 
+          ? { ...q, conformance: conformance as any, comments: comments || q.comments }
+          : q
+      );
+      
+      // Save responses to localStorage
+      if (selectedAuditId) {
+        const responses: Record<string, any> = {};
+        updated.forEach(q => {
+          responses[q.id] = {
+            conformance: q.conformance,
+            comments: q.comments,
+            evidence: q.evidence
+          };
+        });
+        localStorage.setItem(`audit-responses-${selectedAuditId}`, JSON.stringify(responses));
+      }
+      
+      return updated;
+    });
+  };
+
+  const handleClauseExpansion = (clauseId: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+    setExpandedClause(isExpanded ? clauseId : false);
   };
 
   const handleEditAudit = () => {
@@ -568,7 +628,9 @@ export function AuditHub() {
           Audit Calendar
         </Typography>
         <Typography variant="body1" color="text.secondary">
-          Calendar view coming soon - will show scheduled audits, deadlines, and availability.
+          <Typography variant="body2" color="text.secondary" textAlign="center">
+            Calendar view loading - scheduled audits, deadlines, and availability will be displayed here.
+          </Typography>
         </Typography>
       </TabPanel>
 
@@ -704,32 +766,236 @@ export function AuditHub() {
         </DialogActions>
       </Dialog>
 
-      {/* View Audit Dialog (light checklist) */}
-      <Dialog open={viewDialogOpen} onClose={() => setViewDialogOpen(false)} maxWidth="md" fullWidth>
-        <DialogTitle>Audit Details</DialogTitle>
-        <DialogContent>
-          {viewAudit && (
+      {/* ISO 22000 Comprehensive Audit Dialog */}
+      <Dialog open={viewDialogOpen} onClose={() => setViewDialogOpen(false)} maxWidth="xl" fullWidth>
+        <DialogTitle>
+          <Box display="flex" justifyContent="space-between" alignItems="center">
             <Box>
-              <Typography variant="h6" gutterBottom>{viewAudit.title}</Typography>
-              <Typography variant="body2" color="text.secondary" gutterBottom>
-                {viewAudit.standard} • {viewAudit.type} • Lead: {viewAudit.leadAuditor}
+              <Typography variant="h5">{viewAudit?.title}</Typography>
+              <Typography variant="body2" color="text.secondary">
+                {viewAudit?.standard} • {viewAudit?.type} • Lead: {viewAudit?.leadAuditor}
               </Typography>
-              <Typography variant="subtitle1" sx={{ mt: 2, mb: 1 }}>Checklist</Typography>
-              <List dense>
-                {viewChecklist.map(item => (
-                  <ListItem key={item.id} sx={{ pl: 0 }}>
-                    <ListItemIcon>
-                      <input type="checkbox" checked={item.done} onChange={() => setViewChecklist(prev => prev.map(p => p.id === item.id ? { ...p, done: !p.done } : p))} />
-                    </ListItemIcon>
-                    <ListItemText primary={item.text} />
-                  </ListItem>
-                ))}
-              </List>
             </Box>
-          )}
+            <Box>
+              {auditQuestions.length > 0 && (() => {
+                const summary = generateAuditSummary(auditQuestions);
+                return (
+                  <Box textAlign="right">
+                    <Typography variant="h6" color="primary">
+                      {summary.complianceScore}% Compliance
+                    </Typography>
+                    <Typography variant="body2">
+                      {summary.completed}/{summary.total} Questions ({summary.conformant} ✓, {summary.nonConformant} ✗)
+                    </Typography>
+                    <LinearProgress 
+                      variant="determinate" 
+                      value={(summary.completed / summary.total) * 100} 
+                      sx={{ mt: 1, width: 200 }}
+                    />
+                  </Box>
+                );
+              })()}
+            </Box>
+          </Box>
+        </DialogTitle>
+        <DialogContent sx={{ height: '80vh', overflow: 'auto' }}>
+          <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
+            ISO 22000:2018 Audit Checklist - Complete Assessment
+          </Typography>
+          <Typography variant="body2" color="text.secondary" gutterBottom>
+            This comprehensive audit covers all clauses of ISO 22000:2018, HACCP principles, and Prerequisite Programs.
+            Answer each question based on objective evidence and document findings.
+          </Typography>
+
+          {ISO22000_CLAUSES.map((clause) => (
+            <Accordion 
+              key={clause.id}
+              expanded={expandedClause === clause.id}
+              onChange={handleClauseExpansion(clause.id)}
+              sx={{ mb: 1 }}
+            >
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
+                  <Box>
+                    <Typography variant="h6">
+                      Clause {clause.clauseNumber}: {clause.title}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {clause.description}
+                    </Typography>
+                  </Box>
+                  <Box textAlign="right" mr={2}>
+                    {(() => {
+                      const clauseQuestions = auditQuestions.filter(q => q.clause.startsWith(clause.clauseNumber));
+                      const answered = clauseQuestions.filter(q => q.conformance !== 'pending').length;
+                      const conformant = clauseQuestions.filter(q => q.conformance === 'conformant').length;
+                      return (
+                        <Box>
+                          <Typography variant="body2">
+                            {answered}/{clauseQuestions.length} answered
+                          </Typography>
+                          <Chip 
+                            label={`${conformant}✓ ${clauseQuestions.filter(q => q.conformance === 'non-conformant').length}✗`}
+                            size="small"
+                            color={answered === clauseQuestions.length ? "success" : "default"}
+                          />
+                        </Box>
+                      );
+                    })()}
+                  </Box>
+                </Box>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Box>
+                  {clause.questions.map((question) => {
+                    const currentQuestion = auditQuestions.find(q => q.id === question.id) || question;
+                    return (
+                      <Card key={question.id} sx={{ mb: 2, border: '1px solid #e0e0e0' }}>
+                        <CardContent>
+                          <Typography variant="body1" gutterBottom sx={{ fontWeight: 500 }}>
+                            {question.clause}: {question.question}
+                          </Typography>
+                          
+                          <FormControl component="fieldset" sx={{ mt: 2 }}>
+                            <FormLabel component="legend">Conformance Assessment</FormLabel>
+                            <RadioGroup
+                              row
+                              value={currentQuestion.conformance}
+                              onChange={(e) => handleQuestionResponse(question.id, e.target.value)}
+                            >
+                              <FormControlLabel 
+                                value="conformant" 
+                                control={<Radio />} 
+                                label="✓ Conformant" 
+                                sx={{ color: 'success.main' }}
+                              />
+                              <FormControlLabel 
+                                value="non-conformant" 
+                                control={<Radio />} 
+                                label="✗ Non-Conformant"
+                                sx={{ color: 'error.main' }}
+                              />
+                              <FormControlLabel 
+                                value="not-applicable" 
+                                control={<Radio />} 
+                                label="N/A"
+                                sx={{ color: 'text.secondary' }}
+                              />
+                            </RadioGroup>
+                          </FormControl>
+
+                          <TextField
+                            label="Comments / Evidence / Findings"
+                            multiline
+                            rows={2}
+                            fullWidth
+                            sx={{ mt: 2 }}
+                            value={currentQuestion.comments || ''}
+                            onChange={(e) => handleQuestionResponse(question.id, currentQuestion.conformance, e.target.value)}
+                            placeholder="Document objective evidence, reference specific documents, note any non-conformities..."
+                          />
+
+                          {currentQuestion.linkedDocuments && currentQuestion.linkedDocuments.length > 0 && (
+                            <Box sx={{ mt: 1 }}>
+                              <Typography variant="caption" color="text.secondary">
+                                📎 Linked Documents: {currentQuestion.linkedDocuments.join(', ')}
+                              </Typography>
+                            </Box>
+                          )}
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </Box>
+              </AccordionDetails>
+            </Accordion>
+          ))}
+
+          {/* Additional HACCP and PRP Questions */}
+          <Accordion sx={{ mb: 1 }}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography variant="h6">HACCP Principles & Prerequisite Programs</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography variant="body2" color="text.secondary" gutterBottom>
+                Additional detailed questions covering the 7 HACCP principles and prerequisite program requirements.
+              </Typography>
+              {auditQuestions
+                .filter(q => q.clause.includes('HACCP') || q.clause.includes('PRP'))
+                .map((question) => (
+                  <Card key={question.id} sx={{ mb: 2, border: '1px solid #e0e0e0' }}>
+                    <CardContent>
+                      <Typography variant="body1" gutterBottom sx={{ fontWeight: 500 }}>
+                        {question.clause}: {question.question}
+                      </Typography>
+                      
+                      <FormControl component="fieldset" sx={{ mt: 2 }}>
+                        <FormLabel component="legend">Conformance Assessment</FormLabel>
+                        <RadioGroup
+                          row
+                          value={question.conformance}
+                          onChange={(e) => handleQuestionResponse(question.id, e.target.value)}
+                        >
+                          <FormControlLabel value="conformant" control={<Radio />} label="✓ Conformant" />
+                          <FormControlLabel value="non-conformant" control={<Radio />} label="✗ Non-Conformant" />
+                          <FormControlLabel value="not-applicable" control={<Radio />} label="N/A" />
+                        </RadioGroup>
+                      </FormControl>
+
+                      <TextField
+                        label="Comments / Evidence / Findings"
+                        multiline
+                        rows={2}
+                        fullWidth
+                        sx={{ mt: 2 }}
+                        value={question.comments || ''}
+                        onChange={(e) => handleQuestionResponse(question.id, question.conformance, e.target.value)}
+                        placeholder="Document objective evidence, reference specific documents, note any non-conformities..."
+                      />
+                    </CardContent>
+                  </Card>
+                ))}
+            </AccordionDetails>
+          </Accordion>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setViewDialogOpen(false)}>Close</Button>
+          <Button onClick={() => setViewDialogOpen(false)}>Close Audit</Button>
+          <Button 
+            variant="contained" 
+            onClick={() => {
+              const summary = generateAuditSummary(auditQuestions);
+              notify(`Audit progress saved: ${summary.completed}/${summary.total} questions completed`, 'success');
+            }}
+          >
+            Save Progress
+          </Button>
+          <Button 
+            variant="contained" 
+            color="success"
+            onClick={() => {
+              const summary = generateAuditSummary(auditQuestions);
+              const reportData = {
+                audit: viewAudit,
+                summary,
+                questions: auditQuestions,
+                timestamp: new Date().toISOString()
+              };
+              
+              // Generate audit report
+              const blob = new Blob([JSON.stringify(reportData, null, 2)], {
+                type: 'application/json'
+              });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = `audit-report-${viewAudit?.id}-${new Date().toISOString().split('T')[0]}.json`;
+              a.click();
+              
+              notify('Audit report generated and downloaded', 'success');
+            }}
+          >
+            Generate Report
+          </Button>
         </DialogActions>
       </Dialog>
 

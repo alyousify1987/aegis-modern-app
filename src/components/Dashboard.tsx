@@ -32,6 +32,16 @@ interface DashboardData {
   criticalFindings: number;
   riskScore: number;
   complianceScore: number;
+  recentActivities?: {
+    text: string;
+    time: string;
+    type: 'audit' | 'compliance' | 'risk' | 'training';
+  }[];
+  upcomingTasks?: {
+    task: string;
+    due: string;
+    priority: 'high' | 'medium' | 'low';
+  }[];
 }
 
 interface DashboardCardProps {
@@ -344,41 +354,40 @@ export function Dashboard() {
               Recent Activity
             </Typography>
             <Box>
-              {[
-                { text: 'Internal audit completed for Production Line A', time: '2 hours ago', type: 'audit' },
-                { text: 'New SFDA regulation update available', time: '4 hours ago', type: 'compliance' },
-                { text: 'Critical risk identified in Cold Storage', time: '6 hours ago', type: 'risk' },
-                { text: 'HACCP training completed by 5 staff members', time: '1 day ago', type: 'training' },
-                { text: 'ISO 22000 certification audit scheduled', time: '2 days ago', type: 'audit' },
-              ].map((activity, index) => (
-                <Box
-                  key={index}
-                  display="flex"
-                  alignItems="center"
-                  py={1}
-                  borderBottom="1px solid #e0e0e0"
-                >
+              {data.recentActivities && data.recentActivities.length > 0 ? 
+                data.recentActivities.map((activity: any, index: number) => (
                   <Box
-                    sx={{
-                      width: 8,
-                      height: 8,
-                      borderRadius: '50%',
-                      backgroundColor: activity.type === 'audit' ? '#1976d2' :
-                                     activity.type === 'compliance' ? '#2e7d32' :
-                                     activity.type === 'risk' ? '#ed6c02' : '#9c27b0',
-                      mr: 2,
-                    }}
-                  />
-                  <Box flexGrow={1}>
-                    <Typography variant="body2">
-                      {activity.text}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      {activity.time}
-                    </Typography>
+                    key={index}
+                    display="flex"
+                    alignItems="center"
+                    py={1}
+                    borderBottom="1px solid #e0e0e0"
+                  >
+                    <Box
+                      sx={{
+                        width: 8,
+                        height: 8,
+                        borderRadius: '50%',
+                        backgroundColor: activity.type === 'audit' ? '#1976d2' :
+                                       activity.type === 'compliance' ? '#2e7d32' :
+                                       activity.type === 'risk' ? '#ed6c02' : '#9c27b0',
+                        mr: 2,
+                      }}
+                    />
+                    <Box flexGrow={1}>
+                      <Typography variant="body2">
+                        {activity.text}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        {activity.time}
+                      </Typography>
+                    </Box>
                   </Box>
-                </Box>
-              ))}
+                )) : (
+                  <Typography variant="body2" color="text.secondary" sx={{ py: 4, textAlign: 'center' }}>
+                    Activity feed will appear here as you use the system
+                  </Typography>
+                )}
             </Box>
           </Paper>
         </Grid>
@@ -390,46 +399,45 @@ export function Dashboard() {
               Upcoming Tasks
             </Typography>
             <Box>
-              {[
-                { task: 'Complete supplier audit for ABC Foods', due: 'Tomorrow', priority: 'high' },
-                { task: 'Update HACCP documentation', due: 'In 2 days', priority: 'medium' },
-                { task: 'Review corrective actions for Finding #2024-001', due: 'In 3 days', priority: 'high' },
-                { task: 'Conduct monthly management review', due: 'Next week', priority: 'medium' },
-                { task: 'SFDA compliance assessment', due: 'In 10 days', priority: 'low' },
-              ].map((task, index) => (
-                <Box
-                  key={index}
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="space-between"
-                  py={1}
-                  borderBottom="1px solid #e0e0e0"
-                >
-                  <Box>
-                    <Typography variant="body2">
-                      {task.task}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      Due: {task.due}
-                    </Typography>
-                  </Box>
+              {data.upcomingTasks && data.upcomingTasks.length > 0 ? 
+                data.upcomingTasks.map((task: any, index: number) => (
                   <Box
-                    sx={{
-                      px: 1,
-                      py: 0.5,
-                      borderRadius: 1,
-                      backgroundColor: task.priority === 'high' ? '#ffebee' :
-                                     task.priority === 'medium' ? '#fff3e0' : '#e8f5e8',
-                      color: task.priority === 'high' ? '#c62828' :
-                            task.priority === 'medium' ? '#ef6c00' : '#2e7d32',
-                      fontSize: '0.75rem',
-                      fontWeight: 'bold',
-                    }}
+                    key={index}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    py={1}
+                    borderBottom="1px solid #e0e0e0"
                   >
-                    {task.priority.toUpperCase()}
+                    <Box>
+                      <Typography variant="body2">
+                        {task.task}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        Due: {task.due}
+                      </Typography>
+                    </Box>
+                    <Box
+                      sx={{
+                        px: 1,
+                        py: 0.5,
+                        borderRadius: 1,
+                        backgroundColor: task.priority === 'high' ? '#ffebee' :
+                                       task.priority === 'medium' ? '#fff3e0' : '#e8f5e8',
+                        color: task.priority === 'high' ? '#c62828' :
+                               task.priority === 'medium' ? '#ef6c00' : '#2e7d32',
+                        fontSize: '0.75rem',
+                        fontWeight: 'bold',
+                      }}
+                    >
+                      {task.priority.toUpperCase()}
+                    </Box>
                   </Box>
-                </Box>
-              ))}
+                )) : (
+                  <Typography variant="body2" color="text.secondary" sx={{ py: 4, textAlign: 'center' }}>
+                    Tasks and deadlines will appear here based on your audit schedule
+                  </Typography>
+                )}
             </Box>
           </Paper>
         </Grid>

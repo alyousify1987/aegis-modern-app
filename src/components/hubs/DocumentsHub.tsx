@@ -62,8 +62,8 @@ export function DocumentsHub(){
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
         <Typography variant="h4">Document Control</Typography>
         <Box display="flex" gap={1}>
-          <Button variant="contained" onClick={() => void ingestMock()}>Ingest Mock</Button>
-          <Button variant="outlined" onClick={() => void refresh()}>Refresh</Button>
+          <Button variant="outlined" onClick={() => void refresh()}>Refresh Documents</Button>
+          <Button variant="contained" color="primary">Upload Document</Button>
         </Box>
       </Box>
     <Card>

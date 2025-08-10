@@ -566,7 +566,9 @@ export function ActionHub() {
           Action Analytics
         </Typography>
         <Typography variant="body1" color="text.secondary">
-          Performance metrics, completion rates, and efficiency analytics coming soon.
+          <Typography variant="body2" color="text.secondary" textAlign="center">
+            Performance metrics, completion rates, and efficiency analytics will be available here.
+          </Typography>
         </Typography>
       </TabPanel>
 
